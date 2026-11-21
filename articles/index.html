@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://cdn.rrrosmontis.icu/favicon-apple.png">
+    <title>文章索引 - Royirin Rosmontis Presents</title>
+    <link rel="icon" type="image/png" href="https://cdn.rrrosmontis.icu/favicon.png" sizes="64x64">
+<meta name="keywords" content="RRRosmontis,RoyirinRosmontis,Royirin Rosmontis,Royirin">
+    <link rel="stylesheet" href="/articles/css/katex.min.css">
+    <link rel="stylesheet" href="/articles/css/highlight-atom-one-dark.min.css">
+    <link rel="stylesheet" href="/articles/css/main.css">
+    <link rel="stylesheet" href="/articles/css/list.css">
+</head>
+<body>
+
+    <div class="topbar">
+        <div class="brand-text">𝓡𝓸𝔂𝓲𝓻𝓲𝓷·𝓡𝓸𝓼𝓶𝓸𝓷𝓽𝓲𝓼 </div>
+
+        <div class="logo-container">
+            <nav class="topbar-nav">
+                <a href="/#About" class="nav-item">About</a>
+                <a href="/#Articles" class="nav-item">Articles</a>
+                <a href="/#Programs" class="nav-item">Programs</a>
+            </nav>
+
+            <a href="/">
+                <img src="https://cdn.rrrosmontis.icu/logo.png" class="right-logo" alt="网站Logo">
+            </a>
+            <div class="dropdown-menu">
+                <a href="https://space.bilibili.com/246771023?spm_id_from=333.1007.0.0" target="_blank">bilibili →</a>
+                <a href="https://x.com/0_rosmontis_0" target="_blank">X →</a>
+            </div>
+        </div>
+
+
+    </div>
+
+    <div class="mobile-nav-row mobile-only">
+        <a href="/#About" class="nav-item">About</a>
+        <a href="/#Articles" class="nav-item">Articles</a>
+        <a href="/#Programs" class="nav-item">Programs</a>
+    </div>
+
+    <div class="footer">
+        <p class="desktop-footer">© 2025-<span id="copy-year-pc"></span> Royirin Rosmontis. All rights reserved. | <a class="beian" href="https://beian.miit.gov.cn" id="beian" target="_blank">辽ICP备2025070628号</a></p>
+        <div class="mobile-footer mobile-only">
+            <p class="copyright-large">© <span id="copy-year-mobile"></span> Royirin Rosmontis. All rights reserved.</p>
+            <a class="beian-small" href="https://beian.miit.gov.cn" target="_blank">辽ICP备2025070628号</a>
+        </div>
+    </div>
+
+    <br><br><br>
+
+    <div id="article-content">
+        <div id="article-list" style="display:none;">
+            <div id="list-loading" class="list-loading">
+                <span>加载中...</span>
+            </div>
+            <div id="list-error" style="display:none;">
+                <p>文章列表加载失败，请稍后重试</p>
+                <p style="margin-top:12px;"><a href="/#Articles">← 返回主站</a></p>
+            </div>
+            <div id="article-search">
+                <div class="search-box">
+                    <svg class="search-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#888" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><line x1="16.5" y1="16.5" x2="21" y2="21"></line></svg>
+                    <input id="search-input" type="text" placeholder="搜索文章..." autocomplete="off" spellcheck="false">
+                </div>
+                <div id="search-results" class="search-results"></div>
+            </div>
+            <div id="list-container"></div>
+        </div>
+        <div id="article-loading">
+            <span>加载中...</span>
+        </div>
+        <div id="article-error">
+            <p>文章未找到</p>
+            <p style="margin-top:12px;"><a href="/#Articles">← 返回文章列表</a></p>
+        </div>
+    </div>
+
+    <br><br><br><br><br>
+
+    <div class="mobile-toc-bar mobile-only" id="mobile-toc-bar">
+        <span class="mobile-toc-label">目录｜<span id="mobile-toc-current">-</span></span>
+        <span class="toc-progress"><span class="toc-progress-text"></span></span>
+        <span class="mobile-toc-arrow" id="mobile-toc-toggle">▴</span>
+    </div>
+    <div class="mobile-toc-panel mobile-only" id="mobile-toc-panel"></div>
+
+    <script src="/articles/js/highlight.min.js"></script>
+    <script src="/articles/js/katex.min.js"></script>
+    <script src="/articles/js/auto-render.min.js"></script>
+    <script src="/articles/js/list.js"></script>
+    <script src="/articles/js/main.js"></script>
+    <script src="https://cdn.rrrosmontis.icu/js/copyright_get_time.js"></script>
+    <script src="https://cdn.rrrosmontis.icu/js/beian_visibility.js"></script>
+</body>
+</html>

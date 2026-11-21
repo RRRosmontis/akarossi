@@ -1,0 +1,60 @@
+/* Homepage article previews: desktop hover, touch/mobile click-to-toggle. */
+.home-article-preview {
+  display:grid;grid-template-rows:0fr;opacity:0;visibility:hidden;
+  transition:grid-template-rows .35s ease,opacity .35s ease,visibility .35s;
+}
+.home-article-entry.preview-open .home-article-preview {
+  grid-template-rows:1fr;opacity:1;visibility:visible;
+}
+.home-article-preview-toggle{
+  appearance:none;border:0;padding:0;background:transparent;font-family:inherit;cursor:pointer;
+}
+.home-article-preview-toggle:focus-visible{outline:2px solid #888;outline-offset:3px;border-radius:4px}
+.home-article-preview-panel {
+  min-height:0;overflow:hidden;display:flex;align-items:center;gap:24px;
+  max-width:800px;width:100%;margin:0 auto;box-sizing:border-box;
+}
+.home-article-preview-media {
+  flex:0 0 180px;width:180px;height:135px;margin:0 0 15px 30px;
+  border-radius:12px;overflow:hidden;background:rgba(255,255,255,.55);
+  display:flex;align-items:center;justify-content:center;
+}
+.home-article-preview-media img{width:100%;height:100%;object-fit:cover;display:block}
+.home-article-preview-media.no-image{color:rgba(128,128,128,.8);font-size:12px;letter-spacing:.12em}
+.home-article-preview-desc {
+  flex:1;min-width:0;margin:0 30px 15px 0;color:rgba(128,128,128,.8);
+  font-size:.8rem;line-height:1.8;white-space:pre-wrap;overflow-wrap:anywhere;text-align:left;
+}
+@media(max-width:767px){
+  .home-article-preview-panel{flex-direction:column;align-items:stretch;gap:12px}
+  .home-article-preview-media{flex:none;width:calc(100% - 32px);height:auto;aspect-ratio:4/3;margin:0 16px}
+  .home-article-preview-desc{flex:none;margin:0 16px 16px}
+  .home-article-preview-toggle{font-size:inherit}
+}
+@media(prefers-reduced-motion:reduce){.home-article-preview{transition:none !important}}
+
+/* Rows enter one after another once the intro has finished (or right after a slow load). */
+@keyframes homeArticleRowIn {
+  from { opacity:0; transform:translateY(14px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+body.is-played #home-articles .home-article-entry {
+  animation:homeArticleRowIn .5s cubic-bezier(.22,.61,.36,1) backwards;
+}
+body.is-played #home-articles .home-article-entry:nth-child(1){animation-delay:.28s}
+body.is-played #home-articles .home-article-entry:nth-child(2){animation-delay:.35s}
+body.is-played #home-articles .home-article-entry:nth-child(3){animation-delay:.42s}
+body.is-played #home-articles .home-article-entry:nth-child(4){animation-delay:.49s}
+body.is-played #home-articles .home-article-entry:nth-child(5){animation-delay:.56s}
+
+/* Smooths the box growth when late-arriving rows replace the loading placeholder. */
+#home-articles.home-articles-resizing {
+  overflow:hidden;
+  transition:height .4s cubic-bezier(.22,.61,.36,1);
+}
+
+@media(prefers-reduced-motion:reduce){
+  body.is-played #home-articles .home-article-entry{animation:none}
+  #home-articles.home-articles-resizing{transition:none}
+}
+

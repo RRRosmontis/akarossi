@@ -1,0 +1,4 @@
+User-agent: *
+Disallow:
+
+Sitemap: https://akaros.si/sitemap.xml

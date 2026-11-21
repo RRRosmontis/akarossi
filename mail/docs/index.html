@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Akaros Mail API</title>
+  <style>
+    :root { color-scheme: light; --bg:#f5f8fa; --card:rgba(255,255,255,.82); --ink:#2c3e50; --muted:#66737e; --blue:#2586c5; --line:rgba(44,62,80,.12); --code:#eef3f6; }
+    :root[data-theme=dark] { color-scheme:dark; --bg:#10161d; --card:rgba(23,32,42,.9); --ink:#e5edf5; --muted:#a7b4c2; --blue:#82c7f4; --line:rgba(218,233,245,.13); --code:#111a23; }
+    @media(prefers-color-scheme:dark){:root:not([data-theme=light]){color-scheme:dark;--bg:#10161d;--card:rgba(23,32,42,.9);--ink:#e5edf5;--muted:#a7b4c2;--blue:#82c7f4;--line:rgba(218,233,245,.13);--code:#111a23}}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.75 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}main{width:min(100% - 32px,980px);margin:0 auto;padding:42px 0 70px}header{margin-bottom:26px}h1{font-size:30px;line-height:1.3;margin:0 0 8px}h2{font-size:20px;margin:0 0 16px}h3{font-size:15px;margin:22px 0 8px}p{margin:8px 0}a{color:var(--blue);text-decoration:none}a:hover{text-decoration:underline}.muted{color:var(--muted)}.card{padding:24px;margin:14px 0;border:1px solid var(--line);border-radius:18px;background:var(--card);box-shadow:0 10px 30px rgba(0,0,0,.06)}code{padding:2px 5px;border-radius:5px;background:var(--code);font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.9em}pre{max-width:100%;overflow:auto;padding:15px;border-radius:12px;background:var(--code);line-height:1.6}pre code{padding:0;background:none}ul{padding-left:21px}li{margin:5px 0}.endpoint{display:inline-block;margin:4px 8px 4px 0;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-weight:650}.method{color:var(--blue)}.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse}th,td{padding:10px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}th{color:var(--muted)}.links{display:flex;gap:16px;flex-wrap:wrap;margin-top:12px}.notice{border-left:3px solid var(--blue);padding-left:14px}.nav{display:flex;gap:14px;flex-wrap:wrap;margin:20px 0}.nav a{font-size:13px}footer{margin-top:24px;color:var(--muted);font-size:12px}@media(max-width:600px){main{width:min(100% - 24px,980px);padding-top:26px}.card{padding:18px;border-radius:15px}h1{font-size:25px}h2{font-size:18px}.card{overflow:hidden}pre{font-size:12px}}
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Akaros Mail API</h1>
+    <div class="muted"><code>https://api.mail.akaros.si</code></div>
+    <div class="links"><a href="api.md">Markdown 源文件</a><a href="../">返回 Webmail</a></div>
+    <nav class="nav"><a href="#auth">认证</a><a href="#mail">邮件</a><a href="#routing">转发</a><a href="#mcp">MCP</a><a href="#limits">限制</a></nav>
+  </header>
+
+  <section class="card" id="auth">
+    <h2>认证与权限</h2>
+    <p>除健康检查外，REST 与 MCP 均使用 Bearer 密钥：</p>
+    <pre><code>Authorization: Bearer &lt;API_KEY&gt;</code></pre>
+    <ul>
+      <li><strong>管理员</strong>：全部邮件、转发规则和 catch-all。</li>
+      <li><strong>子账户</strong>：仅本人地址的邮件、附件、发件和转发规则；不能管理 catch-all 或其他地址。</li>
+      <li>子账户不返回全局目标地址清单。数据库只保存子账户密钥的 SHA-256 哈希。</li>
+    </ul>
+    <p><span class="endpoint"><span class="method">GET</span> /api/me</span>返回当前角色、账户和权限：</p>
+    <pre><code>{
+  "role": "account",
+  "account": "shirobana@akaros.si",
+  "manage_all_accounts": false,
+  "manage_catch_all": false
+}</code></pre>
+    <p>管理员 <code>role</code> 为 <code>admin</code>，<code>account</code> 为 <code>null</code>。</p>
+  </section>
+
+  <section class="card">
+    <h2>响应与错误</h2>
+    <p>成功响应为 JSON，附件接口返回二进制。错误格式：</p>
+    <pre><code>{"error": "错误说明", "details": {}}</code></pre>
+    <p class="muted">常见状态码：400 参数错误；401 密钥无效；403 权限不足；404 不存在或无权访问；409 冲突；502 SMTP/上游错误；503 未配置。</p>
+  </section>
+
+  <section class="card" id="mail">
+    <h2>邮件 API</h2>
+    <h3>健康检查</h3>
+    <p><span class="endpoint"><span class="method">GET</span> /api/health</span>无需认证。</p>
+
+    <h3>发件</h3>
+    <p><span class="endpoint"><span class="method">POST</span> /api/send</span></p>
+    <pre><code>{
+  "from": "no-reply@akaros.si",
+  "from_name": "Akaros Mail",
+  "to": ["recipient@example.com"],
+  "cc": [],
+  "bcc": [],
+  "subject": "测试",
+  "text": "纯文本正文",
+  "html": "&lt;p&gt;可选 HTML 正文&lt;/p&gt;",
+  "in_reply_to": "&lt;optional-id@example.com&gt;",
+  "references": "&lt;optional-id@example.com&gt;",
+  "attachments": [
+    {"name":"hello.txt", "type":"text/plain", "data":"aGVsbG8="}
+  ]
+}</code></pre>
+    <ul>
+      <li>管理员省略 <code>from</code> 时使用 <code>no-reply@akaros.si</code>；子账户只能使用自身地址。</li>
+      <li><code>to</code>、<code>cc</code>、<code>bcc</code> 至少一项，总计最多 50 个地址。</li>
+      <li>附件最多 10 个，总计 10 MiB；<code>data</code> 为不带 data URL 前缀的 base64。</li>
+      <li>成功返回 <code>201</code>，包含 <code>message</code> 和 <code>smtp_response</code>；失败保存 <code>failed</code> 记录。</li>
+    </ul>
+
+    <h3>邮件列表</h3>
+    <p><span class="endpoint"><span class="method">GET</span> /api/messages?folder=inbox&amp;limit=50</span></p>
+    <div class="table-wrap"><table><thead><tr><th>参数</th><th>说明</th></tr></thead><tbody>
+      <tr><td><code>folder</code></td><td><code>inbox</code>（默认）、<code>sent</code>、<code>failed</code>、<code>outbox</code>、<code>trash</code>、<code>all</code></td></tr>
+      <tr><td><code>direction</code></td><td>可选，<code>in</code> 或 <code>out</code></td></tr>
+      <tr><td><code>q</code></td><td>可选，按主题、发件人或摘要搜索</td></tr>
+      <tr><td><code>limit</code></td><td>1–100，默认 50</td></tr>
+    </tbody></table></div>
+    <p>子账户仅返回 <code>mailbox</code> 等于自身地址的记录。</p>
+
+    <h3>详情与管理</h3>
+    <div class="table-wrap"><table><thead><tr><th>方法与路径</th><th>用途</th></tr></thead><tbody>
+      <tr><td><code>GET /api/messages/:id</code></td><td>完整正文、地址、状态、Message-ID、附件元数据</td></tr>
+      <tr><td><code>PATCH /api/messages/:id</code></td><td><code>{"is_read":true}</code> 或 <code>{"folder":"inbox|trash"}</code></td></tr>
+      <tr><td><code>DELETE /api/messages/:id</code></td><td>移入垃圾箱</td></tr>
+      <tr><td><code>DELETE /api/messages/:id?permanent=1</code></td><td>永久删除邮件、正文及附件对象</td></tr>
+      <tr><td><code>GET /api/attachments/:id</code></td><td>带 Bearer 认证下载原始附件</td></tr>
+    </tbody></table></div>
+    <p class="muted">发件记录从垃圾箱恢复时回到其发件文件夹。子账户访问其他邮件或附件返回 404。</p>
+  </section>
+
+  <section class="card" id="routing">
+    <h2>Email Routing API</h2>
+    <p class="notice">转发规则采用双份留存：邮件先保存到 D1，再由 Worker 调用 <code>message.forward()</code>。Cloudflare 控制台显示 Worker 是预期行为；转发失败不会删除 Webmail 副本。</p>
+    <div class="table-wrap"><table><thead><tr><th>方法与路径</th><th>用途</th></tr></thead><tbody>
+      <tr><td><code>GET /api/routing</code></td><td>返回 <code>settings</code>、<code>rules</code>、<code>catch_all</code>、<code>destinations</code>、<code>access</code></td></tr>
+      <tr><td><code>POST /api/routing/rules</code></td><td>新增本域地址转发规则</td></tr>
+      <tr><td><code>PUT /api/routing/rules/:id</code></td><td>修改目标、名称或启停状态</td></tr>
+      <tr><td><code>DELETE /api/routing/rules/:id</code></td><td>删除普通规则及 D1 映射</td></tr>
+      <tr><td><code>PUT /api/routing/catch-all</code></td><td>管理员配置 <code>worker</code>、<code>drop</code> 或 <code>forward</code></td></tr>
+      <tr><td><code>POST /api/routing/destinations</code></td><td>添加目标地址并触发 Cloudflare 验证邮件</td></tr>
+    </tbody></table></div>
+    <h3>新增规则</h3>
+    <pre><code>{
+  "address": "user@akaros.si",
+  "destination": "verified@example.com",
+  "name": "可选名称",
+  "enabled": true
+}</code></pre>
+    <p>目标地址必须已验证且不能与收件地址相同。子账户只能管理自身地址。</p>
+    <h3>catch-all（仅管理员）</h3>
+    <pre><code>{"enabled":true,"action":"worker"}</code></pre>
+    <p><code>forward</code> 动作需要 <code>destination</code>，也支持先存 D1 再转发。子账户调用返回 403；读取时 <code>catch_all</code> 为 <code>null</code>、<code>destinations</code> 为 <code>[]</code>。</p>
+    <h3>添加目标地址</h3>
+    <pre><code>{"email":"destination@example.com"}</code></pre>
+    <p class="muted">Webmail 不展示已有验证地址或自动补全，目标地址需要手动输入。</p>
+  </section>
+
+  <section class="card" id="mcp">
+    <h2>MCP</h2>
+    <p><span class="endpoint"><span class="method">POST</span> /mcp</span>使用同一个 Bearer API Key，采用无状态 Streamable HTTP。</p>
+    <p>支持 <code>initialize</code>、版本协商、<code>ping</code>、<code>tools/list</code>、<code>tools/call</code> 和通知；协议版本为 2024-11-05、2025-03-26、2025-06-18、2025-11-25、2026-07-28。</p>
+    <pre><code>{
+  "mcpServers": {
+    "akaros-mail": {
+      "type": "http",
+      "url": "https://api.mail.akaros.si/mcp",
+      "headers": {"Authorization":"Bearer &lt;API_KEY&gt;"}
+    }
+  }
+}</code></pre>
+    <div class="table-wrap"><table><thead><tr><th>工具</th><th>用途</th></tr></thead><tbody>
+      <tr><td><code>send_email</code></td><td>发件，参数与 REST 发件相同</td></tr>
+      <tr><td><code>list_emails</code></td><td><code>folder</code>、<code>direction</code>、<code>q</code>、<code>limit</code></td></tr>
+      <tr><td><code>get_email</code></td><td>按 <code>id</code> 读取完整邮件</td></tr>
+      <tr><td><code>get_attachment</code></td><td>按 <code>id</code> 返回附件元数据和 <code>data_base64</code></td></tr>
+    </tbody></table></div>
+    <p>MCP 与 REST 使用相同账户权限。</p>
+  </section>
+
+  <section class="card" id="limits">
+    <h2>限制与存储</h2>
+    <ul>
+      <li>单封接收邮件默认最大 20 MiB，最多 15 个附件。</li>
+      <li>发件正文单种格式最大 2 MB；最多 50 个收件地址。</li>
+      <li>发件附件最多 10 个，总计 10 MiB。</li>
+      <li>正文与附件在 D1 中分块存储。</li>
+      <li>API 不返回 Cloudflare、Brevo 或其他账户密钥。</li>
+    </ul>
+  </section>
+  <footer>Akaros Mail API</footer>
+</main>
+</body>
+</html>

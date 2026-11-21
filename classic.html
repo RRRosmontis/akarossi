@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>𝐑𝐨𝐲𝐢𝐫𝐢𝐧 𝐑𝐨𝐬𝐦𝐨𝐧𝐭𝐢𝐬 𝑪𝒍𝒂𝒔𝒔𝒊𝒄 𝑷𝒂𝒈𝒆</title>
+<link rel="icon" type="image/png" href="https://cdn.rrrosmontis.icu/favicon.png" sizes="64x64">
+<meta name="description" content="RRRosmontis 的千禧年风格主页。アエステティック・ vaporwave ・ Y2K 。">
+<style>
+/* ============================================================
+   RRRosmontis CLASSIC —— 千禧年 / 蒸汽波风格
+   ============================================================ */
+:root {
+    --vapor-pink: #ff71ce;
+    --vapor-cyan: #01cdfe;
+    --vapor-yellow: #fffb96;
+    --vapor-purple: #b967ff;
+    --vapor-green: #05ffa1;
+    --deep-space: #0d0221;
+    --panel-gray: #c0c0c0;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+    margin: 0;
+    position: relative;
+    background-color: var(--deep-space);
+    background-image:
+        radial-gradient(1px 1px at 20px 30px, #ffffff 50%, transparent 51%),
+        radial-gradient(1px 1px at 130px 80px, #ffffff 50%, transparent 51%),
+        radial-gradient(2px 2px at 70px 150px, #fffb96 50%, transparent 51%),
+        radial-gradient(1px 1px at 200px 190px, #01cdfe 50%, transparent 51%),
+        radial-gradient(1px 1px at 40px 220px, #ffffff 50%, transparent 51%),
+        radial-gradient(2px 2px at 240px 40px, #ff71ce 50%, transparent 51%);
+    background-size: 280px 280px;
+    font-family: "SimSun", "宋体", "Times New Roman", serif;
+    color: #eae6ff;
+    overflow-x: hidden;
+}
+a { color: #fffb96; }
+a:visited { color: #b967ff; }
+
+/* ---------- 顶部返回常规主站横条 ---------- */
+.return-bar {
+    display: block;
+    text-align: center;
+    background: #000;
+    color: var(--vapor-yellow);
+    font-size: 15px;
+    letter-spacing: 1px;
+    padding: 8px 10px;
+    text-decoration: none !important;
+    border-bottom: 2px solid var(--vapor-cyan);
+    text-shadow: 0 0 6px rgba(255, 251, 150, 0.8);
+    position: relative;
+    z-index: 10;
+    font-family: Tahoma, "MS PGothic", sans-serif;
+}
+.return-bar:hover { color: #fff; background: #12052e; }
+
+/* ---------- 扫描线 ---------- */
+.scanlines {
+    position: fixed; inset: 0;
+    background: repeating-linear-gradient(
+        to bottom,
+        rgba(0,0,0,0) 0px, rgba(0,0,0,0) 2px,
+        rgba(0,0,0,0.18) 3px, rgba(0,0,0,0.18) 4px);
+    pointer-events: none;
+    z-index: 9000;
+}
+
+/* ---------- 星空画布 ---------- */
+#starfield {
+    position: fixed; inset: 0;
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* ---------- 顶部蒸汽波 HERO ---------- */
+.hero {
+    position: relative;
+    height: 420px;
+    overflow: hidden;
+    background: linear-gradient(to bottom,
+        #1a0533 0%, #3b0f63 30%, #8b2f97 55%,
+        #e34fa0 75%, #ff9e4f 100%);
+}
+.hero .sun {
+    position: absolute;
+    left: 50%; top: 46px;
+    width: 260px; height: 260px;
+    margin-left: -130px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: linear-gradient(to bottom, #fffb96 0%, #ffd319 30%, #ff71ce 75%, #ff2975 100%);
+    box-shadow: 0 0 60px rgba(255, 113, 206, 0.8);
+}
+.hero .sun::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; top: 42%; bottom: 0;
+    background: repeating-linear-gradient(to bottom,
+        transparent 0px, transparent 7px,
+        rgba(26, 5, 51, 0.85) 7px, rgba(26, 5, 51, 0.85) 11px);
+    animation: sunStripeScroll 1.1s linear infinite;
+}
+@keyframes sunStripeScroll {
+    from { background-position: 0 0; }
+    to   { background-position: 0 11px; }
+}
+.hero .grid-floor {
+    position: absolute;
+    left: -50%; right: -50%; bottom: -10px;
+    height: 200px;
+    background-image:
+        repeating-linear-gradient(to right, rgba(1,205,254,0.55) 0 2px, transparent 2px 60px),
+        repeating-linear-gradient(to bottom, rgba(1,205,254,0.55) 0 2px, transparent 2px 34px);
+    transform: perspective(180px) rotateX(62deg);
+    transform-origin: center bottom;
+    -webkit-mask-image: linear-gradient(to top, #000 30%, transparent 100%);
+    mask-image: linear-gradient(to top, #000 30%, transparent 100%);
+    animation: gridScroll 1.2s linear infinite;
+}
+@keyframes gridScroll {
+    from { background-position: 0 0, 0 0; }
+    to   { background-position: 0 0, 0 34px; }
+}
+.hero .statue {
+    position: absolute;
+    right: 6%; bottom: 0;
+    height: 300px;
+    filter: drop-shadow(0 0 18px rgba(185,103,255,0.7)) hue-rotate(200deg) saturate(1.6);
+    opacity: 0.95;
+}
+.hero .column-l, .hero .column-r {
+    position: absolute; bottom: 0; height: 240px;
+    filter: hue-rotate(215deg) saturate(2.2) brightness(1.05) drop-shadow(0 0 10px rgba(1,205,254,0.5));
+    opacity: 0.9;
+}
+.hero .column-l { left: 3%; }
+.hero .column-r { left: 13%; }
+.hero .ufo {
+    position: absolute; left: 8%; top: 40px; height: 70px;
+    animation: ufoFloat 9s ease-in-out infinite;
+    filter: drop-shadow(0 0 12px rgba(5,255,161,0.8));
+}
+@keyframes ufoFloat {
+    0%, 100% { transform: translate(0, 0) rotate(-6deg); }
+    50% { transform: translate(60px, 26px) rotate(8deg); }
+}
+
+/* ---------- 铬字标题 ---------- */
+.title-wrap {
+    position: absolute; left: 0; right: 0; top: 120px;
+    text-align: center; z-index: 5;
+}
+.chrome-title {
+    font-family: "Arial Black", Impact, sans-serif;
+    font-size: 64px;
+    letter-spacing: 4px;
+    margin: 0;
+    background: linear-gradient(to bottom,
+        #eaf6ff 0%, #9fd8ff 30%, #2d6bff 48%,
+        #dbe9ff 52%, #6fb7ff 70%, #0b2a86 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    filter: drop-shadow(2px 3px 0 rgba(0,0,0,0.85)) drop-shadow(0 0 22px rgba(1,205,254,0.55));
+}
+.title-sub {
+    margin-top: 8px;
+    font-size: 16px;
+    color: var(--vapor-yellow);
+    letter-spacing: 6px;
+    text-shadow: 0 0 8px #ff71ce, 1px 1px 0 #000;
+    font-family: "Courier New", monospace;
+}
+.hero .welcome-img { display: block; margin: 14px auto 0; background: rgba(0,0,0,0.5); border-radius: 10px; padding: 3px 14px; box-shadow: 0 0 14px rgba(185,103,255,0.8); }
+
+/* ---------- 跑马灯 ---------- */
+.marquee-bar {
+    background: #000;
+    border-top: 2px solid var(--vapor-cyan);
+    border-bottom: 2px solid var(--vapor-pink);
+    color: var(--vapor-green);
+    font-size: 15px;
+    padding: 6px 0;
+    text-shadow: 0 0 6px var(--vapor-green);
+}
+.marquee-bar img { vertical-align: middle; height: 28px; margin: 0 10px; }
+
+/* ---------- 主体布局 ---------- */
+.container {
+    width: 920px;
+    max-width: 96%;
+    margin: 22px auto 40px;
+}
+.nav-buttons {
+    text-align: center;
+    margin: 14px 0 4px;
+}
+.nav-buttons a img {
+    height: 42px; width: auto;
+    margin: 3px 4px;
+    border: none;
+}
+.nav-buttons a:hover img { filter: brightness(1.35) drop-shadow(0 0 6px var(--vapor-cyan)); }
+
+.status-strip {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    justify-content: center; align-items: center;
+    margin: 14px auto;
+    font-family: "Courier New", monospace;
+    font-size: 14px;
+    color: var(--vapor-yellow);
+    text-shadow: 1px 1px 0 #000;
+}
+.status-strip .led {
+    background: #000;
+    border: 2px inset #555;
+    color: #ff2f3f;
+    font-size: 22px;
+    font-weight: bold;
+    letter-spacing: 4px;
+    padding: 2px 10px;
+    text-shadow: 0 0 8px #ff2f3f;
+    font-family: "Courier New", monospace;
+}
+.status-strip img.counter { height: 44px; vertical-align: middle; }
+.status-strip img.flag { height: 34px; vertical-align: middle; }
+
+/* ---------- Win95 面板 ---------- */
+.panel {
+    background: var(--panel-gray);
+    border: 2px solid;
+    border-color: #ffffff #404040 #404040 #ffffff;
+    box-shadow: inset -1px -1px #0a0a0a, inset 1px 1px #dfdfdf, 0 0 22px rgba(1,205,254,0.25);
+    padding: 3px;
+    margin: 26px auto;
+    color: #111;
+}
+.panel-title {
+    background: linear-gradient(90deg, var(--vapor-pink), var(--vapor-purple) 55%, var(--vapor-cyan));
+    color: #fff;
+    font-weight: bold;
+    font-size: 15px;
+    padding: 4px 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-shadow: 1px 1px 0 #000;
+    letter-spacing: 1px;
+    font-family: Tahoma, "MS PGothic", sans-serif;
+}
+.panel-title .tb-btns span {
+    display: inline-block;
+    width: 16px; height: 14px; line-height: 12px;
+    background: #c0c0c0; color: #000;
+    border: 1px solid; border-color: #fff #404040 #404040 #fff;
+    text-align: center; font-size: 11px; font-weight: bold;
+    margin-left: 2px; text-shadow: none; cursor: default;
+    font-family: Tahoma, sans-serif;
+}
+.panel-body { padding: 10px 12px; font-size: 15px; line-height: 1.7; }
+.field {
+    background: #fff;
+    border: 2px solid;
+    border-color: #404040 #fff #fff #404040;
+    box-shadow: inset 1px 1px #0a0a0a;
+    padding: 8px 12px;
+    margin: 6px 0;
+}
+.panel a { color: #0000cc; }
+.panel a:visited { color: #551a8b; }
+.panel a:hover { color: #ff2975; }
+
+.btn95 {
+    display: inline-block;
+    background: var(--panel-gray);
+    border: 2px solid;
+    border-color: #ffffff #404040 #404040 #ffffff;
+    box-shadow: inset 1px 1px #dfdfdf, inset -1px -1px #0a0a0a;
+    color: #000;
+    font-size: 14px;
+    padding: 4px 18px;
+    cursor: pointer;
+    font-family: Tahoma, "MS PGothic", sans-serif;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.btn95:active { border-color: #404040 #fff #fff #404040; box-shadow: inset -1px -1px #dfdfdf, inset 1px 1px #0a0a0a; }
+
+.blink { animation: blinkAnim 1.1s steps(2, start) infinite; }
+@keyframes blinkAnim { to { visibility: hidden; } }
+
+/* ---------- 一言打字框 ---------- */
+#hitokoto-line { font-family: "Courier New", monospace; font-weight: bold; color: #7a0ea8; }
+#hitokoto-text { min-height: 1.6em; display: block; margin-top: 4px; }
+.typing-cursor { display: inline-block; width: 8px; background: #111; animation: blinkAnim 0.9s steps(2, start) infinite; }
+
+/* ---------- 文章/程序列表 ---------- */
+.entry {
+    display: flex; align-items: center; gap: 8px;
+    padding: 5px 8px;
+}
+.entry .date { color: #555; font-size: 13px; font-family: "Courier New", monospace; white-space: nowrap; }
+.entry .t { flex: 1; }
+.entry img.badge { height: 26px; }
+.entry img.spin { height: 30px; }
+
+.deco-row { text-align: center; margin: 6px 0; }
+.deco-row img { vertical-align: middle; }
+
+.divider { display: block; margin: 14px auto; max-width: 92%; height: auto; }
+.divider.glow { filter: drop-shadow(0 0 6px rgba(1,205,254,0.8)); }
+
+/* ---------- 聊天室 ---------- */
+#chat-log {
+    height: 190px; overflow-y: auto;
+    font-size: 14px;
+}
+#chat-log .u { color: #0033aa; }
+#chat-log .r { color: #a00050; }
+#chat-input { width: 100%; font-family: inherit; font-size: 14px; padding: 4px; border: 2px solid; border-color: #404040 #fff #fff #404040; }
+.chat-note { font-size: 12px; color: #444; }
+
+/* ---------- 页脚 ---------- */
+.footer95 {
+    text-align: center;
+    font-size: 13px;
+    color: #cfc8ee;
+    margin: 30px auto 20px;
+    line-height: 2;
+    text-shadow: 1px 1px 0 #000;
+}
+.footer95 .inner {
+    display: inline-block;
+    background: rgba(0,0,0,0.55);
+    border: 2px solid; border-color: #404040 #dfdfdf #dfdfdf #404040;
+    padding: 10px 30px;
+}
+.footer95 a { color: var(--vapor-cyan); }
+.footer95 img { vertical-align: middle; }
+
+/* ---------- 光标星星 ---------- */
+.sparkle {
+    position: fixed;
+    pointer-events: none;
+    z-index: 9500;
+    font-size: 14px;
+    color: var(--vapor-yellow);
+    text-shadow: 0 0 6px var(--vapor-pink);
+    animation: sparkleFade 0.8s ease-out forwards;
+}
+@keyframes sparkleFade {
+    from { opacity: 1; transform: scale(1) translateY(0); }
+    to { opacity: 0; transform: scale(0.3) translateY(14px); }
+}
+
+/* ---------- 两侧浮动装饰（仅宽屏显示，随页面滚动） ---------- */
+.side-rail {
+    position: absolute;
+    top: 470px;
+    bottom: 60px;
+    width: 150px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    pointer-events: none;
+    z-index: 1;
+}
+.side-rail.left  { left:  max(10px, calc(50% - 630px)); --o: -1; }
+.side-rail.right { right: max(10px, calc(50% - 630px)); --o: 1; }
+.side-rail img {
+    max-width: 110px;
+    height: auto;
+    animation: floatBob 5.5s ease-in-out infinite alternate;
+}
+.side-rail img:nth-child(1)  { margin-left: calc(var(--o) * 50px); animation-duration: 4.8s; animation-delay: 0s;    filter: drop-shadow(0 0 9px rgba(255,251,150,0.75)); }
+.side-rail img:nth-child(2)  { margin-left: calc(var(--o) * -28px); animation-duration: 6.2s; animation-delay: -1.2s; filter: drop-shadow(0 0 9px rgba(1,205,254,0.75)); }
+.side-rail img:nth-child(3)  { margin-left: calc(var(--o) * 12px);  animation-duration: 5.1s; animation-delay: -2.4s; filter: drop-shadow(0 0 9px rgba(255,113,206,0.75)); }
+.side-rail img:nth-child(4)  { margin-left: calc(var(--o) * -40px); animation-duration: 6.8s; animation-delay: -0.8s; filter: drop-shadow(0 0 9px rgba(5,255,161,0.7)); }
+.side-rail img:nth-child(5)  { margin-left: calc(var(--o) * 34px);  animation-duration: 5.7s; animation-delay: -3.1s; filter: drop-shadow(0 0 9px rgba(185,103,255,0.75)); }
+.side-rail img:nth-child(6)  { margin-left: calc(var(--o) * -16px); animation-duration: 4.5s; animation-delay: -1.9s; filter: drop-shadow(0 0 9px rgba(255,41,117,0.7)); }
+.side-rail img:nth-child(7)  { margin-left: calc(var(--o) * 56px);  animation-duration: 5.9s; animation-delay: -2.1s; filter: drop-shadow(0 0 9px rgba(1,205,254,0.75)); }
+.side-rail img:nth-child(8)  { margin-left: calc(var(--o) * -30px); animation-duration: 4.6s; animation-delay: -0.5s; filter: drop-shadow(0 0 9px rgba(255,251,150,0.75)); }
+.side-rail img:nth-child(9)  { margin-left: calc(var(--o) * 22px);  animation-duration: 6.5s; animation-delay: -3.6s; filter: drop-shadow(0 0 9px rgba(5,255,161,0.7)); }
+.side-rail img:nth-child(10) { margin-left: calc(var(--o) * -36px); animation-duration: 5.2s; animation-delay: -1.6s; filter: drop-shadow(0 0 9px rgba(255,41,117,0.7)); }
+.side-rail img:nth-child(11) { margin-left: calc(var(--o) * 44px);  animation-duration: 6.1s; animation-delay: -2.8s; filter: drop-shadow(0 0 9px rgba(185,103,255,0.75)); }
+.side-rail img:nth-child(12) { margin-left: calc(var(--o) * -10px); animation-duration: 4.9s; animation-delay: -1.1s; filter: drop-shadow(0 0 9px rgba(255,113,206,0.75)); }
+@keyframes floatBob {
+    from { transform: translateY(-9px) rotate(-2deg); }
+    to   { transform: translateY(9px)  rotate(2deg); }
+}
+@media (max-width: 1199px) {
+    .side-rail { display: none; }
+}
+
+/* ---------- 雨天模式 ---------- */
+#rainfield {
+    position: fixed; inset: 0;
+    z-index: 3;
+    pointer-events: none;
+    display: none;
+}
+body.raining #rainfield { display: block; }
+body.raining .hero { filter: saturate(0.55) brightness(0.8); }
+.mini-btn {
+    background: #000;
+    border: 2px outset var(--vapor-cyan);
+    color: var(--vapor-cyan);
+    font-size: 13px;
+    padding: 2px 10px;
+    cursor: pointer;
+    font-family: "Courier New", monospace;
+    text-shadow: 0 0 6px var(--vapor-cyan);
+}
+.mini-btn:hover { background: #031a22; }
+
+/* ---------- 88x31 按钮墙 ---------- */
+.badge-wall { margin: 10px 0 4px; }
+.badge31 {
+    display: inline-block;
+    width: 88px; height: 31px;
+    line-height: 27px;
+    font-size: 10px;
+    font-family: Tahoma, Verdana, sans-serif;
+    font-weight: bold;
+    text-align: center;
+    border: 2px solid;
+    border-color: #fff #404040 #404040 #fff;
+    margin: 2px;
+    color: #fff;
+    text-shadow: 1px 1px #000;
+    cursor: default;
+    vertical-align: middle;
+}
+.badge31.gray   { background: linear-gradient(180deg, #c0c0c0, #808080); }
+.badge31.blue   { background: linear-gradient(180deg, #4f8ef7, #0a2a86); }
+.badge31.purple { background: linear-gradient(180deg, #b967ff, #4a1060); }
+.badge31.black  { background: linear-gradient(180deg, #333, #000); }
+.badge31.green  { background: linear-gradient(180deg, #05ffa1, #015c3a); }
+.badge31.pink   { background: linear-gradient(180deg, #ff71ce, #8a0f4f); }
+.badge31.rainbow{ background: linear-gradient(90deg, #ff2975, #ffd319, #05ffa1, #01cdfe); color:#000; text-shadow:1px 1px #fff; }
+
+/* ---------- 在线状态点 ---------- */
+.dot {
+    display: inline-block;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    margin-right: 4px;
+    vertical-align: middle;
+}
+.dot.on  { background: #05ffa1; box-shadow: 0 0 6px #05ffa1; animation: dotBlink 1.6s ease-in-out infinite; }
+.dot.off { background: #777; }
+@keyframes dotBlink { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
+
+/* ---------- KONAMI 彩蛋 ---------- */
+body.party { animation: partyHue 1.2s linear infinite; }
+@keyframes partyHue { from { filter: hue-rotate(0deg); } to { filter: hue-rotate(360deg); } }
+
+@media (max-width: 768px) {
+    .hero { height: 300px; }
+    .hero .sun { width: 180px; height: 180px; margin-left: -90px; top: 30px; }
+    .chrome-title { font-size: 34px; letter-spacing: 2px; }
+    .title-wrap { top: 92px; }
+    .hero .statue { height: 190px; right: 2%; }
+    .hero .column-l, .hero .column-r { height: 150px; }
+    .hero .column-r { display: none; }
+    .hero .ufo { height: 46px; }
+    .container { width: 100%; }
+    .entry { flex-wrap: wrap; }
+}
+</style>
+</head>
+<body id="top">
+
+<a href="/" class="return-bar">点击此处返回常规主站↗</a>
+
+<canvas id="starfield"></canvas>
+<canvas id="rainfield"></canvas>
+<div class="scanlines"></div>
+
+<!-- ================= HERO ================= -->
+<div class="hero">
+    <div class="sun"></div>
+    <div class="grid-floor"></div>
+    <img src="https://cdn.rrrosmontis.icu/assets/ufo.gif" class="ufo" alt="UFO">
+    <img src="https://cdn.rrrosmontis.icu/assets/column_ionic.gif" class="column-l" alt="">
+    <img src="https://cdn.rrrosmontis.icu/assets/column_corinthian.gif" class="column-r" alt="">
+    <img src="https://cdn.rrrosmontis.icu/assets/statue_athene.gif" class="statue" alt="Athena">
+    <div class="title-wrap">
+        <h1 class="chrome-title">R.R.ROSMONTIS</h1>
+        <div class="title-sub">〜 電 脳 空 間 へ よ う こ そ 〜 CYBER SPACE 2000</div>
+        <img src="https://cdn.rrrosmontis.icu/assets/welcome_neon.gif" class="welcome-img" alt="WELCOME">
+    </div>
+</div>
+
+<div class="marquee-bar">
+    <marquee scrollamount="5" scrolldelay="60">※ 欢迎来到 RRRosmontis 的主页（千禧年限定版） ※ 本站最好使用 Netscape Navigator 4.0 或 Internet Explorer 5.0、800×600 分辨率、百万色以上环境浏览 ※ アエステティックは永遠に ※ 雨天・雪天・极端天气爱好者俱乐部 ※</marquee>
+</div>
+
+<!-- ================= 两侧浮动装饰（宽屏限定，随页面滚动） ================= -->
+<div class="side-rail left" aria-hidden="true">
+    <img src="https://cdn.rrrosmontis.icu/assets/side_saturn.gif" alt="">
+    <img src="https://cdn.rrrosmontis.icu/assets/side_tvhead.gif" alt="">
+    <img src="https://cdn.rrrosmontis.icu/assets/side_pager.gif" style="max-width:88px;" alt="">
+    <img src="https://cdn.rrrosmontis.icu/assets/side_fish.gif" alt="">
+    <img src="https://cdn.rrrosmontis.icu/assets/side_rose.gif" alt="">
+    <img src="https://cdn.rrrosmontis.icu/assets/side_umbrella.gif" alt="">
+    <img src="https://cdn.rrrosmontis.icu/assets/side_rose.gif" alt="">
+    <img src="https://cdn.rrrosmontis.icu/assets/side_saturn.gif" alt="">
+    <img src="https://cdn.rrrosmontis.icu/assets/side_umbrella.gif" alt="">
+    <img src="https://cdn.rrrosmontis.icu/assets/side_fish.gif" alt="">
+    <img src="https://cdn.rrrosmontis.icu/assets/side_tvhead.gif" alt="">
+    <img src="https://cdn.rrrosmontis.icu/assets/side_pager.gif" style="max-width:88px;" alt="">
+</div>
+<div class="side-rail right" aria-hidden="true">
+    <img src="https://cdn.rrrosmontis.icu/assets/side_comet.gif" alt="">
+    <img src="https://cdn.rrrosmontis.icu/assets/side_disco.gif" alt="">
+    <img src="https://cdn.rrrosmontis.icu/assets/side_wolf.gif" alt="">
+    <img src="https://cdn.rrrosmontis.icu/assets/side_gamepad.gif" alt="">
+    <img src="https://cdn.rrrosmontis.icu/assets/side_strawberry.gif" alt="">
+    <img src="https://cdn.rrrosmontis.icu/assets/side_butterfly.gif" alt="">
+    <img src="https://cdn.rrrosmontis.icu/assets/side_strawberry.gif" alt="">
+    <img src="https://cdn.rrrosmontis.icu/assets/side_comet.gif" alt="">
+    <img src="https://cdn.rrrosmontis.icu/assets/side_butterfly.gif" alt="">
+    <img src="https://cdn.rrrosmontis.icu/assets/side_wolf.gif" alt="">
+    <img src="https://cdn.rrrosmontis.icu/assets/side_disco.gif" alt="">
+    <img src="https://cdn.rrrosmontis.icu/assets/side_gamepad.gif" alt="">
+</div>
+
+<div class="container">
+
+    <!-- ================= 导航 ================= -->
+    <div class="nav-buttons">
+        <a href="#top"><img src="https://cdn.rrrosmontis.icu/assets/btn_home.gif" alt="Home"></a>
+        <a href="#about"><img src="https://cdn.rrrosmontis.icu/assets/btn_welcome.gif" alt="About"></a>
+        <a href="#articles"><img src="https://cdn.rrrosmontis.icu/assets/btn_new.gif" alt="Articles"></a>
+        <a href="#chat"><img src="https://cdn.rrrosmontis.icu/assets/btn_chat.gif" alt="Chat"></a>
+        <a href="#links"><img src="https://cdn.rrrosmontis.icu/assets/btn_links.gif" alt="Links"></a>
+        <a href="mailto:royirin@rrrosmontis.icu"><img src="https://cdn.rrrosmontis.icu/assets/btn_email.gif" alt="Email"></a>
+        <a href="/"><img src="https://cdn.rrrosmontis.icu/assets/btn_back.gif" alt="Back" title="返回常规主站"></a>
+    </div>
+
+    <!-- ================= 状态条 ================= -->
+    <div class="status-strip">
+        <img src="https://cdn.rrrosmontis.icu/assets/flag_checker.gif" class="flag" alt="">
+        <span id="greeting">こんにちは</span><span>，你是第</span>
+        <span class="led" id="hit-counter">000000</span>
+        <span>位来访者</span>
+        <img src="https://cdn.rrrosmontis.icu/assets/counter_black.gif" class="counter" alt="counter">
+        <span id="today-str"></span>
+        <span class="led" id="live-clock" style="font-size:16px; color:#05ffa1; text-shadow:0 0 8px #05ffa1;">--:--:--</span>
+        <span class="blink" style="color:#ff71ce;">★每日绝赞更新中★</span>
+        <button class="mini-btn" id="rain-toggle">☔ 雨を呼ぶ</button>
+    </div>
+
+    <img src="https://cdn.rrrosmontis.icu/assets/div_neon_aqua.gif" class="divider glow" alt="">
+
+    <!-- ================= 一言 ================= -->
+    <div class="panel">
+        <div class="panel-title">
+            <span>■ 一言.exe — HITOKOTO</span>
+            <span class="tb-btns"><span>_</span><span>□</span><span>×</span></span>
+        </div>
+        <div class="panel-body">
+            <div class="deco-row">
+                <img src="https://cdn.rrrosmontis.icu/assets/globe_antique.gif" style="height:60px;" alt="globe">
+                <img src="https://cdn.rrrosmontis.icu/assets/star_spin.gif" style="height:44px;" alt="star">
+                <img src="https://cdn.rrrosmontis.icu/assets/earth_blue.gif" style="height:60px;" alt="earth">
+            </div>
+            <div class="field">
+                <span id="hitokoto-line">Line ?</span>
+                <span id="hitokoto-text">加载中……</span>
+            </div>
+        </div>
+    </div>
+
+    <img src="https://cdn.rrrosmontis.icu/assets/div_pulse_prpl.gif" class="divider glow" alt="">
+
+    <!-- ================= About ================= -->
+    <div class="panel" id="about">
+        <div class="panel-title">
+            <span>■ 关于站长.txt — ABOUT</span>
+            <span class="tb-btns"><span>_</span><span>□</span><span>×</span></span>
+        </div>
+        <div class="panel-body">
+            <div class="field">
+                <div style="display:flex; align-items:center; gap:14px; flex-wrap:wrap;">
+                    <img src="https://cdn.rrrosmontis.icu/assets/envelope.gif" style="height:80px;" alt="mail">
+                    <div>
+                        <b>Royirin Rosmontis</b>（あーるあーる・ろすもんてぃす）<br>
+                        E-mail：<a href="mailto:royirin@rrrosmontis.icu">royirin@rrrosmontis.icu</a>
+                        <img src="https://cdn.rrrosmontis.icu/assets/spin_at.gif" style="height:26px; vertical-align:middle;" alt="@"><br>
+                        <span style="font-size:13px;">CN / INFJ / Minecraft / Arknights / BanG Dream / Arcaea / Cyberpunk / Galgame / Touhou / Vtuber / Vocaloid</span>
+                    </div>
+                </div>
+            </div>
+            <div class="field" style="text-align:center;">
+                <b>♪ 站长的游戏记录 ♪</b><br>
+                <a href="https://cdn.rrrosmontis.icu/ark.png" target="_blank"><img src="https://cdn.rrrosmontis.icu/assets/spin_disc.gif" class="spin" alt=""> Arknights（2025.10.24）</a>
+                　
+                <a href="https://cdn.rrrosmontis.icu/arcaea.png" target="_blank"><img src="https://cdn.rrrosmontis.icu/assets/spin_disc.gif" class="spin" alt=""> Arcaea（2026.1.6）</a>
+            </div>
+            <div class="field" style="text-align:center;">
+                <img src="https://cdn.rrrosmontis.icu/assets/headphones_note.gif" style="height:64px; vertical-align:middle;" alt="music">
+                <img src="https://cdn.rrrosmontis.icu/assets/cassette.gif" style="height:64px; vertical-align:middle;" alt="tape">
+                <img src="https://cdn.rrrosmontis.icu/assets/cd_spin.gif" style="height:56px; vertical-align:middle;" alt="cd">
+                <br>
+                <span style="font-size:13px;">Now Playing：粤语歌 / 林俊杰 / 周杰伦 / Artcore …（磁带绝赞回转中）</span>
+            </div>
+        </div>
+    </div>
+
+    <img src="https://cdn.rrrosmontis.icu/assets/div_neon_purp.gif" class="divider glow" alt="">
+
+    <!-- ================= 本站情报 ================= -->
+    <div class="panel" id="siteinfo">
+        <div class="panel-title">
+            <span>■ 本站情报.sys — SITE INFO</span>
+            <span class="tb-btns"><span>_</span><span>□</span><span>×</span></span>
+        </div>
+        <div class="panel-body">
+            <div class="field">
+                开站日期：2025年6月（大约）／ 本站已在互联网存活 <b id="run-days">?</b> 天<br>
+                距离 3000 年还有 <b id="y3k-days">?</b> 天 —— Y3K 问题绝赞倒计时中<br>
+                当前版本：<b>Classic Ver.2000</b>（<a href="/">→ 切换到常规主站 Ver.2026</a>）<br>
+                站长状态：<span id="online-dot" class="dot off"></span><span id="online-text">探测中……</span>
+                　<img src="https://cdn.rrrosmontis.icu/assets/side_umbrella.gif" style="height:36px; vertical-align:middle;" alt=""> 站长推荐天气：雨（点上面状态条的「雨を呼ぶ」可以真的下雨哦）
+            </div>
+            <div style="text-align:center; margin-top:8px;">
+                <button class="btn95" id="fav-btn">☆ 加入收藏夹</button>
+                <button class="btn95" id="home-btn">⌂ 设为首页</button>
+                <button class="btn95" id="random-btn">？ 随便看看</button>
+            </div>
+        </div>
+    </div>
+
+    <img src="https://cdn.rrrosmontis.icu/assets/div_chrome.gif" class="divider" alt="">
+
+    <!-- ================= Articles ================= -->
+    <div class="panel" id="articles">
+        <div class="panel-title">
+            <span>■ 记事本 — ARTICLES</span>
+            <span class="tb-btns"><span>_</span><span>□</span><span>×</span></span>
+        </div>
+        <div class="panel-body">
+            <div class="field">
+                <div class="entry">
+                    <img src="https://cdn.rrrosmontis.icu/assets/spin_new.gif" class="spin" alt="NEW">
+                    <span class="t"><a href="/articles/index.html?id=00005" target="_blank">丢掉付费梯子，从白嫖服务器开始自建代理来使用Claude</a></span>
+                    <span class="date">2026-06-23</span>
+                </div>
+                <div class="entry">
+                    <img src="https://cdn.rrrosmontis.icu/assets/spin_new.gif" class="spin" alt="NEW">
+                    <span class="t"><a href="/articles/index.html?id=00004" target="_blank">适用于AI Agent的链接到本站邮件服务的MCP</a></span>
+                    <span class="date">2026-06-12</span>
+                </div>
+                <div class="entry">
+                    <img src="https://cdn.rrrosmontis.icu/assets/new_neon.gif" class="badge" alt="new">
+                    <span class="t"><a href="/articles/index.html?id=00003" target="_blank">bu4.ren OpenAPI</a></span>
+                    <span class="date">2026-05-25</span>
+                </div>
+                <div class="entry">
+                    <img src="https://cdn.rrrosmontis.icu/assets/arrow_neon_rt.gif" class="badge" alt="&gt;">
+                    <span class="t"><a href="/articles/index.html?id=00001" target="_blank">对Lonelydcb的严肃抨击</a></span>
+                    <span class="date">2025-03-23</span>
+                </div>
+            </div>
+            <div style="text-align:center; margin-top:8px;">
+                <img src="https://cdn.rrrosmontis.icu/assets/updated_neon.gif" style="height:30px;" alt="UPDATED">
+                <img src="https://cdn.rrrosmontis.icu/assets/news_neon.gif" style="height:30px;" alt="NEWS">
+            </div>
+        </div>
+    </div>
+
+    <img src="https://cdn.rrrosmontis.icu/assets/div_lightbar.gif" class="divider glow" alt="">
+
+    <!-- ================= Programs ================= -->
+    <div class="panel" id="programs">
+        <div class="panel-title">
+            <span>■ 程序集 — PROGRAMS</span>
+            <span class="tb-btns"><span>_</span><span>□</span><span>×</span></span>
+        </div>
+        <div class="panel-body">
+            <div class="field">
+                <div class="entry">
+                    <img src="https://cdn.rrrosmontis.icu/assets/spin_hot.gif" class="spin" alt="HOT">
+                    <span class="t"><a href="https://live.rrrosmontis.icu/" target="_blank">直播 | T S U K U Y O M I</a></span>
+                    <img src="https://cdn.rrrosmontis.icu/assets/hot_neon.gif" class="badge" alt="HOT">
+                </div>
+                <div class="entry">
+                    <img src="https://cdn.rrrosmontis.icu/assets/spin_link.gif" class="spin" alt="">
+                    <span class="t"><a href="https://mail.rrrosmontis.icu/" target="_blank">邮箱 | Ne.Lukiffy's Mailbox</a></span>
+                    <span class="date">2026-02-12</span>
+                </div>
+                <div class="entry">
+                    <img src="https://cdn.rrrosmontis.icu/assets/spin_link.gif" class="spin" alt="">
+                    <span class="t"><a href="/notes/" target="_blank">手记 | Ne.Lukiffy's Notebook</a></span>
+                    <span class="date">/</span>
+                </div>
+                <div class="entry">
+                    <img src="https://cdn.rrrosmontis.icu/assets/arrow_neon_rt.gif" class="badge" alt="&gt;">
+                    <span class="t"><a href="/programs/tools/markdown" target="_blank">实用工具 | Markdown 编辑器</a></span>
+                    <img src="https://cdn.rrrosmontis.icu/assets/cd_spin.gif" style="height:30px;" alt="">
+                </div>
+            </div>
+            <div class="field">
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <img src="https://cdn.rrrosmontis.icu/assets/joystick.gif" style="height:70px;" alt="games">
+                    <div>
+                        <b>小游戏厅 <span style="font-size:12px;">（投币口故障，免费游玩）</span></b><br>
+                        <a class="btn95" href="/programs/games/2048" target="_blank">2048</a>
+                        <a class="btn95" href="/programs/games/minesweeper" target="_blank">扫雷</a>
+                        <a class="btn95" href="/programs/games/xterfusion" target="_blank">xterfusion盒</a>
+                    </div>
+                </div>
+            </div>
+            <div style="text-align:center;">
+                <img src="https://cdn.rrrosmontis.icu/assets/cool_neon.gif" style="height:30px;" alt="COOL">
+                <a href="https://status.rrrosmontis.icu" target="_blank"><img src="https://cdn.rrrosmontis.icu/assets/btn_search.gif" style="height:36px; vertical-align:middle;" alt="status" title="服务器状态监控"></a>
+                <img src="https://cdn.rrrosmontis.icu/assets/enter_neon.gif" style="height:30px;" alt="ENTER">
+            </div>
+        </div>
+    </div>
+
+    <img src="https://cdn.rrrosmontis.icu/assets/div_neon_blue.gif" class="divider glow" alt="">
+
+    <!-- ================= Chat ================= -->
+    <div class="panel" id="chat">
+        <div class="panel-title">
+            <span>■ 聊天室 — 和 ros 说点什么吧 (´▽｀)</span>
+            <span class="tb-btns"><span>_</span><span>□</span><span>×</span></span>
+        </div>
+        <div class="panel-body">
+            <div class="field" id="chat-log">
+                <div class="r"><b>ros：</b>……你来啦。有什么事？</div>
+            </div>
+            <div style="display:flex; gap:6px; margin-top:6px;">
+                <input id="chat-input" type="text" maxlength="200" placeholder="输入消息，回车发送……">
+                <button class="btn95" id="chat-send">发送</button>
+            </div>
+            <div class="chat-note">※ AI 自动应答。聊天记录仅保存在你自己的浏览器里（24小时）。</div>
+        </div>
+    </div>
+
+    <img src="https://cdn.rrrosmontis.icu/assets/div_rainbow.gif" class="divider" style="max-width:70%;" alt="">
+
+    <!-- ================= Links ================= -->
+    <div class="panel" id="links">
+        <div class="panel-title">
+            <span>■ 友情链接 — LINKS</span>
+            <span class="tb-btns"><span>_</span><span>□</span><span>×</span></span>
+        </div>
+        <div class="panel-body" style="text-align:center;">
+            <img src="https://cdn.rrrosmontis.icu/assets/links_neon.gif" style="height:32px;" alt="LINKS"><br><br>
+            <a class="btn95" href="https://space.bilibili.com/246771023" target="_blank">bilibili →</a>
+            <a class="btn95" href="https://x.com/0_rosmontis_0" target="_blank">X (Twitter) →</a>
+            <a class="btn95" href="https://status.rrrosmontis.icu" target="_blank">服务器状态监控 →</a>
+            <br><br>
+            <img src="https://cdn.rrrosmontis.icu/assets/smile.gif" style="height:48px;" alt="smile">
+            <img src="https://cdn.rrrosmontis.icu/assets/dolphin2.gif" style="height:56px;" alt="dolphin">
+            <img src="https://cdn.rrrosmontis.icu/assets/monitor_guy.gif" style="height:56px;" alt="monitor">
+            <br>
+            <span style="font-size:12px; color:#444;">交换链接请发邮件 <img src="https://cdn.rrrosmontis.icu/assets/email_neon.gif" style="height:22px; vertical-align:middle;" alt="E-MAIL"></span>
+        </div>
+    </div>
+
+    <div style="text-align:center; margin:18px 0;">
+        <img src="https://cdn.rrrosmontis.icu/assets/under_construction.gif" style="height:76px;" alt="under construction">
+        <div style="font-size:13px; color:var(--vapor-yellow); text-shadow:1px 1px 0 #000;">次回更新予定：未定（拖延症绝赞发作中）</div>
+    </div>
+
+    <!-- ================= Footer ================= -->
+    <div class="footer95">
+        <div class="inner">
+            <img src="https://cdn.rrrosmontis.icu/assets/dolphin.gif" style="height:42px;" alt="dolphin">
+            <img src="https://cdn.rrrosmontis.icu/assets/guestbook_neon.gif" style="height:26px;" alt="GUESTBOOK">
+            <img src="https://cdn.rrrosmontis.icu/assets/dolphin2.gif" style="height:42px;" alt="dolphin">
+            <div class="badge-wall">
+                <span class="badge31 gray">HTML 4.01</span>
+                <span class="badge31 blue">CSS 2.0</span>
+                <span class="badge31 purple">Y2K READY</span>
+                <span class="badge31 black">800×600</span>
+                <span class="badge31 green">GIF 89a</span>
+                <span class="badge31 pink">愛 &amp; PEACE</span>
+                <span class="badge31 rainbow" style="font-size:8px; letter-spacing:-0.5px; white-space:nowrap;">NETSCAPE NOW!</span>
+            </div>
+            © 2000-<span id="copy-year">2026</span> Royirin Rosmontis. All rights reserved.<br>
+            <a href="https://beian.miit.gov.cn" target="_blank">辽ICP备2025070628号</a><br>
+            本页面由记事本纯手工打造 ／ Made with Notepad &amp; 愛<br>
+            <span id="browser-joke" style="font-size:11px; color:#8f86c0;"></span><br>
+            <span style="font-size:11px; color:#8f86c0;">素材来源：Animation Factory Essential Collection (via archive.org) ｜ ページ最終更新：<span id="last-mod"></span></span>
+        </div>
+    </div>
+
+</div>
+
+<script>
+/* ================= 星空 ================= */
+(function () {
+    const cv = document.getElementById('starfield');
+    const ctx = cv.getContext('2d');
+    let stars = [];
+    function resize() {
+        cv.width = window.innerWidth;
+        cv.height = window.innerHeight;
+        stars = [];
+        const n = Math.floor(cv.width * cv.height / 9000);
+        for (let i = 0; i < n; i++) {
+            stars.push({
+                x: Math.random() * cv.width,
+                y: Math.random() * cv.height,
+                r: Math.random() * 1.4 + 0.3,
+                p: Math.random() * Math.PI * 2,
+                s: 0.02 + Math.random() * 0.04,
+                c: ['#ffffff', '#fffb96', '#01cdfe', '#ff71ce'][Math.floor(Math.random() * 4)]
+            });
+        }
+    }
+    resize();
+    window.addEventListener('resize', resize);
+    (function draw() {
+        ctx.clearRect(0, 0, cv.width, cv.height);
+        for (const st of stars) {
+            st.p += st.s;
+            ctx.globalAlpha = 0.35 + Math.abs(Math.sin(st.p)) * 0.65;
+            ctx.fillStyle = st.c;
+            ctx.fillRect(st.x, st.y, st.r, st.r);
+        }
+        ctx.globalAlpha = 1;
+        requestAnimationFrame(draw);
+    })();
+})();
+
+/* ================= 访问计数（娱乐向） ================= */
+(function () {
+    let n = parseInt(localStorage.getItem('classic_hits') || '1925', 10);
+    n += 1;
+    localStorage.setItem('classic_hits', String(n));
+    document.getElementById('hit-counter').textContent = String(n).padStart(6, '0');
+})();
+
+/* ================= 日期 / 页脚 ================= */
+(function () {
+    const now = new Date();
+    const week = '日月火水木金土'[now.getDay()];
+    document.getElementById('today-str').textContent =
+        now.getFullYear() + '年' + (now.getMonth() + 1) + '月' + now.getDate() + '日 星期' + week;
+    document.getElementById('copy-year').textContent = now.getFullYear();
+    document.getElementById('last-mod').textContent = document.lastModified;
+})();
+
+/* ================= 一言打字机 ================= */
+(function () {
+    const lineEl = document.getElementById('hitokoto-line');
+    const textEl = document.getElementById('hitokoto-text');
+    let lines = [], lastIndex = -1, typing = false;
+    fetch('https://cdn.rrrosmontis.icu/dict.txt')
+        .then(r => r.text())
+        .then(t => {
+            lines = t.split('\n').filter(l => l.trim() !== '');
+            if (lines.length) present();
+        })
+        .catch(() => { textEl.textContent = '（一言加载失败……网线被猫咬了）'; });
+    function pick() {
+        let i;
+        do { i = Math.floor(Math.random() * lines.length); } while (i === lastIndex && lines.length > 1);
+        lastIndex = i;
+        return i;
+    }
+    function present() {
+        if (typing) return;
+        typing = true;
+        const idx = pick();
+        const line = lines[idx];
+        lineEl.textContent = 'Line ' + (idx + 1);
+        let c = 0;
+        (function type() {
+            if (c <= line.length) {
+                textEl.innerHTML = line.substring(0, c) + '<span class="typing-cursor">&nbsp;</span>';
+                c++;
+                setTimeout(type, 55);
+            } else {
+                setTimeout(() => { typing = false; present(); }, 4000);
+            }
+        })();
+    }
+})();
+
+/* ================= ROS 聊天室（与主站同一套 AI） ================= */
+
+(function () {
+    const log = document.getElementById('chat-log');
+    const input = document.getElementById('chat-input');
+    const sendBtn = document.getElementById('chat-send');
+
+    function esc(s) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+    function append(cls, name, text) {
+        const d = document.createElement('div');
+        d.className = cls;
+        d.innerHTML = '<b>' + name + '：</b>' + esc(text).replace(/\n/g, '<br>');
+        log.appendChild(d);
+        log.scrollTop = log.scrollHeight;
+    }
+
+    const chatHistory = {
+        getValid() {
+            const h = JSON.parse(localStorage.getItem('chatHistory') || '[]');
+            const now = Date.now();
+            return h.filter(e => now - e.timestamp < 86400000);
+        },
+        add(u, r) {
+            const h = this.getValid();
+            h.push({ userInput: u, apiResponse: r, timestamp: Date.now() });
+            localStorage.setItem('chatHistory', JSON.stringify(h));
+        },
+    };
+
+    async function askRos(text) {
+        const now = new Date();
+        const timeStr = now.toLocaleString('zh-CN', { hour12: false });
+        const fullInput = text + '\n[当前用户所在地区时间为 ' + timeStr + '，非必要无需对时间信息进行特地回复。无需对提供的时间信息做出质疑，它是准确的。]';
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), 30000);
+        const resp = await fetch('https://api.rrrosmontis.icu/v1/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                message: fullInput,
+                history: chatHistory.getValid()
+            }),
+            signal: controller.signal
+        });
+        clearTimeout(timer);
+        if (!resp.ok) {
+            let errorText = 'API Error: ' + resp.status;
+            try { const ed = await resp.json(); if (ed.error) errorText = ed.error; } catch (e) {}
+            throw new Error(errorText);
+        }
+        const data = await resp.json();
+        if (!data.success) throw new Error(data.error || '请求失败');
+        return data.reply;
+    }
+
+    let busy = false;
+    async function send() {
+        const text = input.value.trim();
+        if (!text || busy) return;
+        busy = true;
+        append('u', '你', text);
+        input.value = '';
+        append('r', 'ros', '输入中……');
+        const pending = log.lastChild;
+        try {
+            const reply = await askRos(text);
+            pending.remove();
+            append('r', 'ros', reply);
+            chatHistory.add(text, reply);
+        } catch (e) {
+            pending.remove();
+            append('r', 'ros', '（信号不佳……稍后再试吧。' + (e.name === 'AbortError' ? '请求超时了' : '') + '）');
+        }
+        busy = false;
+    }
+    sendBtn.addEventListener('click', send);
+    input.addEventListener('keydown', e => { if (e.key === 'Enter') send(); });
+})();
+
+/* ================= 鼠标星星拖尾 ================= */
+(function () {
+    if ('ontouchstart' in window) return;
+    const glyphs = ['✦', '✧', '★', '☆', '＊'];
+    let last = 0;
+    document.addEventListener('mousemove', function (e) {
+        const now = Date.now();
+        if (now - last < 50) return;
+        last = now;
+        const s = document.createElement('span');
+        s.className = 'sparkle';
+        s.textContent = glyphs[Math.floor(Math.random() * glyphs.length)];
+        s.style.left = (e.clientX - 6 + (Math.random() * 10 - 5)) + 'px';
+        s.style.top = (e.clientY - 6 + (Math.random() * 10 - 5)) + 'px';
+        document.body.appendChild(s);
+        setTimeout(() => s.remove(), 850);
+    });
+})();
+
+/* ================= 时钟与问候 ================= */
+(function () {
+    const clockEl = document.getElementById('live-clock');
+    const greetEl = document.getElementById('greeting');
+    function tick() {
+        const n = new Date();
+        const p = x => String(x).padStart(2, '0');
+        clockEl.textContent = p(n.getHours()) + ':' + p(n.getMinutes()) + ':' + p(n.getSeconds());
+        const h = n.getHours();
+        greetEl.textContent = h < 5 ? 'おやすみ（夜猫子）' : h < 11 ? 'おはよう' : h < 18 ? 'こんにちは' : 'こんばんは';
+    }
+    tick();
+    setInterval(tick, 1000);
+})();
+
+/* ================= 本站情报 ================= */
+(function () {
+    const dayMs = 86400000;
+    document.getElementById('run-days').textContent =
+        Math.floor((Date.now() - new Date('2025-06-11T00:00:00+08:00')) / dayMs);
+    document.getElementById('y3k-days').textContent =
+        Math.floor((new Date('3000-01-01T00:00:00+08:00') - Date.now()) / dayMs);
+    const h = new Date().getHours();
+    const online = h >= 9 && h < 24;
+    document.getElementById('online-dot').className = 'dot ' + (online ? 'on' : 'off');
+    document.getElementById('online-text').textContent =
+        online ? '在线（大概）' : '睡眠中（夜猫子也是需要睡觉的）';
+
+    document.getElementById('fav-btn').addEventListener('click', () =>
+        alert('请按 Ctrl+D 收藏本站！(´▽｀)\n手机用户请点浏览器的 ☆'));
+    document.getElementById('home-btn').addEventListener('click', () =>
+        alert('拜托了，把 ' + location.origin + ' 设为首页吧！\n（2000年的网站都流行这么说）'));
+    const places = [
+        '/articles/index.html?id=00005',
+        '/articles/index.html?id=00004',
+        '/articles/index.html?id=00003',
+        '/articles/index.html?id=00001',
+        'https://live.rrrosmontis.icu/',
+        'https://mail.rrrosmontis.icu/',
+        '/notes/',
+        '/programs/tools/markdown',
+        '/programs/games/2048',
+        '/programs/games/minesweeper',
+        '/programs/games/xterfusion',
+        'https://status.rrrosmontis.icu'
+    ];
+    document.getElementById('random-btn').addEventListener('click', () =>
+        window.open(places[Math.floor(Math.random() * places.length)], '_blank'));
+})();
+
+/* ================= 雨天模式 ================= */
+(function () {
+    const cv = document.getElementById('rainfield');
+    const ctx = cv.getContext('2d');
+    const btn = document.getElementById('rain-toggle');
+    let drops = [], running = false, rafId = null;
+    function resize() { cv.width = window.innerWidth; cv.height = window.innerHeight; }
+    resize();
+    window.addEventListener('resize', resize);
+    function loop() {
+        if (!running) return;
+        ctx.clearRect(0, 0, cv.width, cv.height);
+        if (drops.length < 130 && Math.random() < 0.4) {
+            drops.push({
+                x: Math.random() * cv.width, y: -20,
+                sp: 5 + Math.random() * 6, sz: 1.5 + Math.random() * 2
+            });
+        }
+        ctx.strokeStyle = 'rgba(120, 190, 255, 0.55)';
+        drops = drops.filter(d => d.y < cv.height + 20);
+        for (const d of drops) {
+            d.y += d.sp;
+            ctx.lineWidth = d.sz;
+            ctx.beginPath();
+            ctx.moveTo(d.x, d.y);
+            ctx.lineTo(d.x + d.sz / 2, d.y + d.sz * 6);
+            ctx.stroke();
+        }
+        rafId = requestAnimationFrame(loop);
+    }
+    btn.addEventListener('click', () => {
+        running = !running;
+        document.body.classList.toggle('raining', running);
+        btn.textContent = running ? '☀ 雨を止める' : '☔ 雨を呼ぶ';
+        if (running) loop();
+        else if (rafId) cancelAnimationFrame(rafId);
+    });
+    if (location.hash === '#rain' || location.hash === '#ame') btn.click();
+})();
+
+/* ================= 浏览器吐槽 ================= */
+(function () {
+    const ua = navigator.userAgent;
+    let name = '神秘浏览器';
+    if (ua.includes('Edg/')) name = 'Microsoft Edge';
+    else if (ua.includes('Chrome/')) name = 'Google Chrome';
+    else if (ua.includes('Firefox/')) name = 'Mozilla Firefox';
+    else if (ua.includes('Safari/')) name = 'Safari';
+    document.getElementById('browser-joke').textContent =
+        '检测到你正在使用 ' + name + ' —— 推荐升级（？）到 Netscape Navigator 4.0 以获得最佳浏览体验';
+})();
+
+/* ================= KONAMI 彩蛋 ================= */
+(function () {
+    const seq = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+    let idx = 0;
+    document.addEventListener('keydown', e => {
+        idx = (e.key === seq[idx]) ? idx + 1 : (e.key === seq[0] ? 1 : 0);
+        if (idx === seq.length) {
+            idx = 0;
+            document.body.classList.add('party');
+            alert('KONAMI!! アゲアゲ PARTY TIME!!');
+            setTimeout(() => document.body.classList.remove('party'), 9000);
+        }
+    });
+})();
+</script>
+    <script src="https://cdn.rrrosmontis.icu/js/beian_visibility.js"></script>
+</body>
+</html>

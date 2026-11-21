@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://cdn.rrrosmontis.icu/favicon-apple.png">
+    <title>Royirin Rosmontis Presents- 扫雷</title>
+    <link rel="icon" type="image/png" href="https://cdn.rrrosmontis.icu/favicon.png" sizes="64x64">
+<style>
+    html {
+        touch-action: manipulation;
+    }
+    
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url('https://cdn.rrrosmontis.icu/background.jpg');
+        background-size: cover;
+        background-position: center;
+        z-index: -1; 
+    }
+
+    body {
+        padding-top: 80px;
+        min-height: 100vh;
+    }
+
+    @media (max-width: 768px) {
+        body::before {
+            background-image: url('https://cdn.rrrosmontis.icu/background-mobile.jpg');
+        }
+        
+        body {
+            font-size: 14px;
+            padding-bottom: 70px; 
+        }
+    }
+
+    /* 顶栏样式 */
+    .topbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 70px;
+        background: #ffffff;
+        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 5%;
+        z-index: 1000;
+        gap: 20px;
+    }
+
+    .brand-text {
+        font-size: 1.8em;
+        color: #2c3e50;
+        font-weight: 600;
+        letter-spacing: 1.5px;
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeLegibility;
+    }
+
+    .logo-container {
+        display: flex;
+        align-items: center;
+        gap: 30px;
+        margin-left: auto;
+    }
+
+    @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+
+    .right-logo {
+        height: 45px;
+        width: auto;
+        transition: transform 0.3s ease;
+        cursor: pointer;
+    }
+
+    .right-logo:hover {
+        animation: spin 0.5s linear;
+    }
+
+    .dropdown-menu {
+        position: absolute;
+        right: 0;
+        top: 100%;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(5px);
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        min-width: 180px;
+        display: none;
+        z-index: 1001;
+    }
+
+    .dropdown-menu.active {
+        display: block;
+        animation: menuSlide 0.3s ease;
+    }
+
+    @keyframes menuSlide {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .dropdown-menu a {
+        display: block;
+        padding: 12px 20px;
+        color: #2c3e50;
+        text-decoration: none;
+        font-size: 1em;
+        transition: background 0.2s ease;
+    }
+
+    .dropdown-menu a:hover {
+        background: rgba(44, 62, 80, 0.05);
+    }
+
+    .topbar-nav {
+        display: flex;
+        gap: 20px;
+        order: -1;
+        margin-right: 0;
+    }
+    
+    .nav-item {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 
+                    Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        font-size: 1.1em;
+        color: #2c3e50;
+        text-decoration: none;
+        position: relative;
+        transition: color 0.2s ease;
+        padding: 5px 0;
+    }
+    
+    .nav-item:hover {
+        color: #3498db;
+    }
+    
+    .nav-item::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background-color: #3498db;
+        transition: width 0.3s ease;
+    }
+    
+    .nav-item:hover::after {
+        width: 100%;
+    }
+
+    /* 移动端专用 */
+    .mobile-only {
+        display: none;
+    }
+
+    .mobile-nav-row {
+        display: none;
+    }
+
+    @media (max-width: 768px) {
+        .topbar {
+            height: 55px;
+            padding: 0 20px;
+            justify-content: center;
+            position: fixed;
+        }
+        
+        .brand-text {
+            font-size: 1.4em;
+            text-align: center;
+            width: 100%;
+        }
+
+        .logo-container,
+        .right-logo,
+        .dropdown-menu {
+            display: none !important;
+        }
+
+        /* 先显示 mobile-only 元素 */
+        .mobile-only {
+            display: block;
+        }
+
+        /* 再覆盖 mobile-nav-row 的 display 为 flex，使用 !important 防止被覆盖 */
+        .mobile-nav-row {
+            display: flex !important;
+            position: fixed;
+            top: 55px;
+            left: 0;
+            width: 100%;
+            height: 51px; /* 固定高度确保一致 */
+            background: #ffffff;
+            border-top: 1px solid #eee;
+            border-bottom: 1px solid #eee;
+            padding: 10px 0;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            z-index: 998;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .mobile-nav-row .nav-item {
+            font-size: 1em;
+            color: #2c3e50;
+            text-decoration: none;
+            position: relative;
+            padding: 5px 0;
+            flex-shrink: 0; /* 防止导航项被压缩 */
+        }
+
+        .footer {
+            padding: 6px 0;
+        }
+
+        .desktop-footer {
+            display: none;
+        }
+
+        .mobile-footer {
+            display: flex;
+            flex-direction: column;
+            gap: 4px; 
+            align-items: center;
+            justify-content: center;
+        }
+
+        .copyright-large {
+            font-size: 0.9em;
+            color: #333;
+            font-weight: 500;
+            margin: 0;
+        }
+
+        .beian-small {
+            font-size: 0.65em;
+            color: #999;
+            text-decoration: none;
+        }
+
+    }
+
+    /* 页脚样式 */
+    .footer {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background: #ffffff;
+        padding: 15px 0;
+        text-align: center;
+        font-size: 0.9em;
+        color: #666;
+        border-top: 1px solid #eee;
+        z-index: 999;
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    .beian {
+        text-decoration: none; 
+        color: #666;
+        font-size: 0.88em;
+    }
+
+    /* 扫雷游戏特有样式 */
+    .game-input {
+        padding: 10px 15px;
+        width: 110px;
+        border: 1px solid rgba(44, 62, 80, 0.15);
+        border-radius: 8px;
+        background: rgba(255,255,255,0.9);
+        font-family: -apple-system;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .game-input:focus {
+        outline: none;
+        border-color: #3498db;
+        box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+    }
+
+    .game-button {
+        padding: 10px 25px;
+        background: linear-gradient(135deg, #3498db, #2980b9);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-family: -apple-system;
+        letter-spacing: 1px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .game-button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+    }
+
+    #game-board {
+        display: grid;
+        gap: 2px;
+        background: rgba(44, 62, 80, 0.1);
+        padding: 12px;
+        border-radius: 8px;
+        justify-content: center;
+    }
+
+    .cell {
+        width: 32px;
+        height: 32px;
+        border: 1px solid rgba(44, 62, 80, 0.1);
+        background: rgba(255,255,255,0.95);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-weight: bold;
+        border-radius: 4px;
+        transition: all 0.2s ease;
+        box-sizing: border-box;
+        margin: 0;
+    }
+
+    .cell.revealed {
+        background: rgba(233, 236, 239, 0.9);
+        box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .cell.mine {
+        background: #ff6b6b !important;
+        animation: mineBlink 0.8s ease;
+    }
+
+    @keyframes mineBlink {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.7; }
+    }
+
+    .cell.flagged {
+        background: #ffe066 url('data:image/svg+xml;utf8,<svg viewBox="0 0 24 24" width="16" height="16" fill="%23ff6b6b"><path d="M14.4 6L14 4H5v17h2v-7h5.6l.4 2h7V6z"/></svg>') center/60% no-repeat;
+    }
+
+    .cell:hover:not(.revealed) {
+        background: #dee2e6;
+    }
+
+    #minesweeper-container {
+        position: relative;
+        z-index: 1;
+        transition: transform 0.2s cubic-bezier(0.22, 0.61, 0.36, 1);
+        will-change: transform;
+        margin: 20px auto;
+        transform-box: fill-box;
+        overflow: visible !important;
+    }
+
+    .scale-controls {
+        position: fixed;
+        right: 20px;
+        bottom: 100px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        z-index: 1000;
+    }
+
+    .scale-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #1a80ff;
+        color: white;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .scale-btn:hover {
+        background: #0066cc;
+        transform: scale(1.1);
+    }
+
+    .scale-btn:active {
+        transform: scale(0.95);
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+    /* 扫雷页面容器样式 */
+    #dynamic-content {
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(8px);
+        border-radius: 20px;
+        padding: 40px;
+        margin: 30px auto;
+        max-width: 800px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        min-height: 200px;
+    }
+
+    .additional-box {
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(8px);
+        border-radius: 20px;
+        padding: 40px;
+        margin: 0 auto 60px;
+        max-width: 800px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        min-height: 200px;
+    }
+
+    @media (max-width: 768px) {
+        #dynamic-content {
+            margin-top: 130px; /* 增大上边距，为固定导航栏留出空间 */
+            padding: 25px;
+        }
+
+        .additional-box {
+            padding: 25px;
+            margin: 0 auto 30px;
+            min-height: 150px;
+        }
+
+        #game-controls div {
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .game-input {
+            width: 100%;
+            margin: 5px 0;
+        }
+
+        #game-board {
+            gap: 1px;
+            padding: 8px;
+        }
+
+        .cell {
+            width: 28px;
+            height: 28px;
+        }
+
+        #minesweeper-container {
+            transform: translateY(0) scale(0.9) !important;
+            margin: 40px auto;
+        }
+
+        .scale-controls {
+            bottom: 80px;
+            right: 10px;
+        }
+    
+        .scale-btn {
+            width: 35px;
+            height: 35px;
+            font-size: 20px;
+        }
+
+        .beian {
+            font-size: 0.75em;
+        }
+    }
+</style>
+</head>
+<body>
+<div class="topbar">
+    <div class="brand-text">𝓡𝓸𝔂𝓲𝓻𝓲𝓷·𝓡𝓸𝓼𝓶𝓸𝓷𝓽𝓲𝓼</div>
+    
+   <div class="logo-container">
+        <nav class="topbar-nav">
+            <a href="/#About" class="nav-item">About</a>
+            <a href="/#Articles" class="nav-item">Articles</a>
+            <a href="/#Programs" class="nav-item">Programs</a>
+        </nav>
+        
+        <a href="/">
+            <img src="https://cdn.rrrosmontis.icu/logo.png" class="right-logo" alt="网站Logo">
+        </a>
+        <div class="dropdown-menu">
+            <a href="https://space.bilibili.com/246771023?spm_id_from=333.1007.0.0" target="_blank">bilibili →</a>
+            <a href="https://x.com/0_rosmontis_0" target="_blank">X →</a>
+        </div>
+    </div>
+
+</div>
+
+<!-- 移动端专用导航 -->
+<div class="mobile-nav-row mobile-only">
+    <a href="/#About" class="nav-item">About</a>
+    <a href="/#Articles" class="nav-item">Articles</a>
+    <a href="/#Programs" class="nav-item">Programs</a>
+</div>
+    
+    <div class="footer">
+        <p class="desktop-footer">© 2025-<span id="copy-year-pc"></span> Royirin Rosmontis. All rights reserved. | <a class="beian" href="https://beian.miit.gov.cn" id="beian" target="_blank">辽ICP备2025070628号</a></p>
+        <div class="mobile-footer mobile-only">
+            <p class="copyright-large">© <span id="copy-year-mobile"></span> Royirin Rosmontis. All rights reserved.</p>
+            <a class="beian-small" href="https://beian.miit.gov.cn" target="_blank">辽ICP备2025070628号</a>
+        </div>
+    </div>
+
+
+<!-- 扫雷游戏容器 -->
+<br>
+<br>
+<div id="minesweeper-container" class="additional-box">
+    <h2 style="margin-bottom: 25px; color: #2c3e50; font-family: -apple-system; letter-spacing: 1px;">Minesweeper 扫雷</h2>
+    
+    <div id="game-controls" style="margin-bottom: 25px;">
+        <div style="display: inline-flex; gap: 10px; background: rgba(255,255,255,0.9); padding: 12px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+            <input type="number" id="rows" min="1" max="20" placeholder="行数" class="game-input" oninput="clampValue(this)">
+            <input type="number" id="cols" min="1" max="20" placeholder="列数" class="game-input" oninput="clampValue(this)">
+            <input type="number" id="mines" min="1" max="99" placeholder="雷数" class="game-input">
+            <button onclick="startNewGame()" class="game-button">开始新游戏</button>
+        </div>
+    </div>
+
+    <div id="game-status" style="margin: 20px 0; font-size: 1.1em; color: #2c3e50; font-family: -apple-system;"></div>
+    <div id="game-board"></div>
+</div>
+
+<script>
+    let gameBoard = [];
+    let minesCount = 0;
+    let flagsCount = 0;
+    let gameActive = false;
+
+    function clampValue(input) {
+        if (input.value < 1) input.value = 1;
+        if (input.value > 20) input.value = 20;
+    }
+
+    function startNewGame() {
+        let rows = parseInt(document.getElementById('rows').value) || 10;
+        let cols = parseInt(document.getElementById('cols').value) || 10;
+        let mines = parseInt(document.getElementById('mines').value) || 15;
+
+        rows = Math.min(Math.max(rows, 1), 20);
+        cols = Math.min(Math.max(cols, 1), 20);
+        mines = Math.min(Math.max(mines, 1), rows*cols-1);
+
+        document.getElementById('rows').value = rows;
+        document.getElementById('cols').value = cols;
+        document.getElementById('mines').value = mines;
+
+        if (mines >= rows * cols) {
+            alert('雷数不能超过总格子数！');
+            return;
+        }
+
+        gameActive = true;
+        flagsCount = 0;
+        document.getElementById('game-status').textContent = `剩余雷数: ${mines}`;
+
+        createBoard(rows, cols, mines);
+    }
+
+    function createBoard(rows, cols, mines) {
+        const board = document.getElementById('game-board');
+        board.innerHTML = '';
+        gameBoard = [];
+        
+        const isMobile = window.innerWidth <= 768;
+        const cellSize = isMobile ? 28 : 32;
+        
+        board.style.display = 'grid';
+        board.style.gridTemplateColumns = `repeat(${cols}, ${cellSize}px)`;
+        board.style.gridAutoRows = `${cellSize}px`;
+        
+        const totalCells = rows * cols;
+        mines = Math.min(mines, totalCells - 1);
+        
+        const positions = [];
+        for (let i = 0; i < rows; i++) {
+            for (let j = 0; j < cols; j++) {
+                positions.push({x: i, y: j});
+            }
+        }
+        
+        for (let i = positions.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [positions[i], positions[j]] = [positions[j], positions[i]];
+        }
+        
+        for (let i = 0; i < rows; i++) {
+            gameBoard[i] = [];
+            for (let j = 0; j < cols; j++) {
+                gameBoard[i][j] = {
+                    isMine: false,
+                    revealed: false,
+                    flagged: false,
+                    neighborMines: 0
+                };
+            }
+        }
+        
+        for (let i = 0; i < mines; i++) {
+            const pos = positions[i];
+            gameBoard[pos.x][pos.y].isMine = true;
+        }
+
+        for (let i = 0; i < rows; i++) {
+            for (let j = 0; j < cols; j++) {
+                if (!gameBoard[i][j].isMine) {
+                    gameBoard[i][j].neighborMines = countNeighborMines(i, j, rows, cols);
+                }
+            }
+        }
+
+        minesCount = mines;
+
+        board.style.setProperty('--cols', cols);
+        for (let i = 0; i < rows; i++) {
+            for (let j = 0; j < cols; j++) {
+                const cell = document.createElement('div');
+                cell.className = 'cell';
+                cell.dataset.x = i;
+                cell.dataset.y = j;
+                
+                cell.addEventListener('click', handleLeftClick);
+                cell.addEventListener('contextmenu', handleRightClick);
+                
+                board.appendChild(cell);
+            }
+        }
+    }
+
+    function countNeighborMines(x, y, rows, cols) {
+        let count = 0;
+        for (let i = Math.max(0, x-1); i <= Math.min(rows-1, x+1); i++) {
+            for (let j = Math.max(0, y-1); j <= Math.min(cols-1, y+1); j++) {
+                if (gameBoard[i][j].isMine) count++;
+            }
+        }
+        return count;
+    }
+
+    function handleLeftClick(e) {
+        if (!gameActive) return;
+        const x = parseInt(e.target.dataset.x);
+        const y = parseInt(e.target.dataset.y);
+        revealCell(x, y);
+    }
+
+    function handleRightClick(e) {
+        e.preventDefault();
+        if (!gameActive) return;
+        const cell = e.target;
+        const x = parseInt(cell.dataset.x);
+        const y = parseInt(cell.dataset.y);
+        
+        if (!gameBoard[x][y].revealed) {
+            gameBoard[x][y].flagged = !gameBoard[x][y].flagged;
+            flagsCount += gameBoard[x][y].flagged ? 1 : -1;
+            cell.classList.toggle('flagged');
+            document.getElementById('game-status').textContent = `剩余雷数: ${minesCount - flagsCount}`;
+        }
+    }
+
+    function revealCell(x, y) {
+        if (gameBoard[x][y].revealed || gameBoard[x][y].flagged) return;
+        
+        const cell = document.querySelector(`[data-x="${x}"][data-y="${y}"]`);
+        cell.classList.add('revealed');
+        gameBoard[x][y].revealed = true;
+
+        if (gameBoard[x][y].isMine) {
+            cell.classList.add('mine');
+            cell.textContent = '💣';
+            gameOver(false);
+            return;
+        }
+
+        if (gameBoard[x][y].neighborMines > 0) {
+            cell.textContent = gameBoard[x][y].neighborMines;
+            cell.style.color = ['#3498db', '#2ecc71', '#e74c3c', '#9b59b6', '#f1c40f', '#1abc9c', '#e67e22', '#2c3e50'][gameBoard[x][y].neighborMines - 1];
+        } else {
+            for (let i = Math.max(0, x-1); i <= Math.min(gameBoard.length-1, x+1); i++) {
+                for (let j = Math.max(0, y-1); j <= Math.min(gameBoard[0].length-1, y+1); j++) {
+                    if (!gameBoard[i][j].revealed) revealCell(i, j);
+                }
+            }
+        }
+
+        checkWin();
+    }
+
+    function gameOver(won) {
+        gameActive = false;
+        if (won) {
+            document.getElementById('game-status').textContent = '🎉 你赢了！';
+        } else {
+            document.getElementById('game-status').textContent = '💥 游戏结束！';
+            gameBoard.forEach((row, x) => {
+                row.forEach((cell, y) => {
+                    if (cell.isMine) {
+                        const mineCell = document.querySelector(`[data-x="${x}"][data-y="${y}"]`);
+                        mineCell.classList.add('mine');
+                        mineCell.textContent = '💣';
+                    }
+                });
+            });
+        }
+    }
+
+    function checkWin() {
+        let unrevealedSafe = 0;
+        gameBoard.forEach(row => {
+            row.forEach(cell => {
+                if (!cell.isMine && !cell.revealed) unrevealedSafe++;
+            });
+        });
+        if (unrevealedSafe === 0) gameOver(true);
+    }
+</script>
+
+    <div class="scale-controls">
+        <button class="scale-btn" id="zoom-in">+</button>
+        <button class="scale-btn" id="zoom-out">-</button>
+    </div>
+
+<script>
+    const gameContainer = document.getElementById('minesweeper-container');
+    let scale = 0.9; // 默认设置为0.9（点击一次减小后的大小）
+    const minScale = 0.7;
+    const maxScale = 1.3;
+    const scaleStep = 0.1;
+    
+    function updateScale(newScale) {
+        scale = Math.min(Math.max(newScale, minScale), maxScale);
+        gameContainer.style.transform = `scale(${scale})`;
+        gameContainer.style.transformOrigin = 'center top';
+        gameContainer.style.margin = '20px auto 80px';
+    }
+    
+    // 初始化应用默认缩放0.9
+    updateScale(0.9);
+    
+    document.getElementById('zoom-in').onclick = (e) => {
+        e.stopPropagation();
+        updateScale(scale + scaleStep);
+    };
+    
+    document.getElementById('zoom-out').onclick = (e) => {
+        e.stopPropagation();
+        updateScale(scale - scaleStep);
+    };
+    
+    gameContainer.addEventListener('wheel', (e) => {
+        if (e.ctrlKey) {
+            e.preventDefault();
+            const delta = e.deltaY * -0.01;
+            updateScale(scale + delta);
+        }
+    }, { passive: false });
+    
+    window.addEventListener('resize', () => {
+        if (window.innerWidth <= 768) {
+            updateScale(0.9);
+        }
+    });
+</script>
+
+    <script src="https://cdn.rrrosmontis.icu/js/copyright_get_time.js"></script>
+    <script src="https://cdn.rrrosmontis.icu/js/beian_visibility.js"></script>
+</body>
+</html>

@@ -1,0 +1,403 @@
+/* ============ 文章列表样式（list.css） ============ */
+
+/* 加载中文字样式 */
+#article-loading,
+.list-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #999;
+    padding: 80px 20px;
+    font-size: 16px;
+    letter-spacing: 2px;
+}
+
+#list-error {
+    text-align: center;
+    color: #c44;
+    padding: 60px 20px;
+    font-size: 16px;
+}
+#list-error a {
+    color: #3370ff;
+    text-decoration: none;
+}
+
+/* 列表容器：移动端/平板单栏，pc 双栏网格（按行顺序） */
+#list-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 8px 12px 44px;
+    columns: 1;
+}
+
+/* ---------- 文章卡片（横向：左图右文，图片纵向占满卡片） ---------- */
+.article-card {
+    position: relative;
+    display: flex;
+    gap: 16px;
+    padding: 16px;
+    margin-bottom: 20px;
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-radius: 20px;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.06);
+    break-inside: avoid;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* 图片区域：默认宽约 40%，纵向占满卡片高度；JS 会按 4:3 收敛调整宽度 */
+.card-media {
+    flex: 0 0 auto;
+    width: 40%;
+    max-width: 45%;
+    min-width: 110px;
+    align-self: stretch;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #e8eaed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #9aa0a8;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+.card-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* 右侧文字区 */
+.card-body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.card-title {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+    color: #111;
+    line-height: 1.35;
+}
+.card-desc {
+    margin: 8px 0 0;
+    font-size: 14px;
+    line-height: 1.7;
+    color: #888;
+    font-style: italic;
+}
+/* 底部元信息行：id 靠左、时间靠右 */
+.card-meta {
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 10px;
+}
+.card-id {
+    font-size: 13px;
+    color: #999;
+    font-family: 'Courier New', monospace;
+}
+.card-date {
+    font-size: 12.5px;
+    color: #aaa;
+    letter-spacing: 0.5px;
+}
+
+/* 卡片入场动画 */
+@keyframes cardFadeInUp {
+    from { opacity: 0; transform: translateY(26px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.article-card {
+    opacity: 0;
+    animation: cardFadeInUp 0.55s ease-out forwards;
+}
+
+/* ---------- 移动端（<768px）：垂直布局，图在标题上方，无 hover ---------- */
+@media (max-width: 767px) {
+    #list-container {
+        padding: 8px 12px 44px;
+    }
+    .article-card {
+        flex-direction: column;
+        gap: 12px;
+        padding: 14px;
+        margin-bottom: 18px;
+        height: auto;             /* 移动端不固定高度 */
+    }
+    .card-media {
+        align-self: auto;
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        aspect-ratio: 4 / 3;
+    }
+    .card-title {
+        font-size: 19px;
+    }
+    .card-desc {
+        font-size: 13.5px;
+        flex: 0 0 auto;
+        display: block;
+        overflow: visible;
+    }
+}
+
+/* 移动端阅读进度小栏（文章页显示时）：从下到上渐显 */
+#mobile-toc-bar {
+    animation: tocBarUp 0.45s cubic-bezier(0.22, 0.8, 0.36, 1) both;
+}
+@keyframes tocBarUp {
+    from { opacity: 0; transform: translateY(120%); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- pad 端（768-1024px）：单栏瀑布流，横向卡片 ---------- */
+@media (min-width: 768px) and (max-width: 1024px) {
+    #list-container {
+        columns: 1;
+        padding: 16px 20px 56px;
+    }
+    .article-card {
+        gap: 20px;
+        padding: 20px;
+        margin-bottom: 24px;
+        height: 220px;            /* 固定卡片高度，保证双栏/单栏整齐 */
+    }
+    .card-body {
+        justify-content: space-between;
+    }
+    .card-title {
+        font-size: 22px;
+    }
+    .card-desc {
+        font-size: 14.5px;
+        flex: 1;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+}
+
+/* ---------- pc 端（>=1025px）：双栏网格，按行顺序排列 ---------- */
+@media (min-width: 1025px) {
+    #list-container {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 24px;
+        padding: 20px 32px 56px;
+        max-width: 1440px;   /* 横向拉宽卡片 */
+        align-items: start;   /* 同排卡片高度独立，不互相撑高 */
+    }
+    .article-card {
+        margin-bottom: 0;
+        gap: 20px;
+        padding: 20px;
+        height: 220px;            /* 固定卡片高度 */
+    }
+    .card-body {
+        justify-content: space-between;
+    }
+    .card-title {
+        font-size: 22px;
+    }
+    .card-desc {
+        font-size: 14.5px;
+        flex: 1;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+}
+
+/* ---------- hover 效果（对话气泡 + 上浮，仅 pad/pc；移动端无 hover） ---------- */
+@media (min-width: 768px) {
+    .article-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 14px 40px rgba(0, 0, 0, 0.12);
+    }
+    .article-card::before,
+    .article-card::after {
+        position: absolute;
+        right: 14px;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+        z-index: 5;
+        pointer-events: none;
+    }
+    .article-card::before {
+        content: "";
+        top: 40px;
+        width: 10px;
+        height: 10px;
+        background: rgba(0, 0, 0, 0.78);
+        border-radius: 2px;
+        transform: rotate(45deg);
+    }
+    .article-card::after {
+        content: "点击跳转";
+        top: 14px;
+        background: rgba(0, 0, 0, 0.78);
+        color: #fff;
+        padding: 7px 14px;
+        border-radius: 12px;
+        font-size: 12.5px;
+        letter-spacing: 1px;
+        white-space: nowrap;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+    }
+    .article-card:hover::before {
+        opacity: 1;
+        visibility: visible;
+        transform: translateX(-34px) rotate(45deg);
+    }
+    .article-card:hover::after {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(3px);
+    }
+}
+
+/* ---------- Bing 式搜索栏 ---------- */
+#article-search {
+    position: relative;
+    max-width: 820px;
+    margin: 0 auto 34px;
+    padding: 0 12px;
+}
+.search-box {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 999px;
+    padding: 16px 26px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    transition: box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.search-box:focus-within {
+    box-shadow: 0 6px 28px rgba(52, 152, 219, 0.2);
+    border-color: rgba(52, 152, 219, 0.55);
+}
+.search-icon {
+    flex-shrink: 0;
+    opacity: 0.75;
+    width: 22px;
+    height: 22px;
+}
+.search-box input {
+    flex: 1;
+    min-width: 0;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 17px;
+    color: #333;
+}
+.search-box input::placeholder {
+    color: #aaa;
+}
+
+/* 下拉结果面板（带动画） */
+.search-results {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 12px;
+    right: 12px;
+    background: rgba(255, 255, 255, 0.97);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 16px;
+    box-shadow: 0 16px 44px rgba(0, 0, 0, 0.16);
+    max-height: 320px;
+    overflow-y: auto;
+    z-index: 50;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-8px) scale(0.98);
+    transform-origin: top center;
+    transition: opacity 0.22s ease, transform 0.22s cubic-bezier(0.25, 0.8, 0.25, 1), visibility 0.22s;
+}
+.search-results.open {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+}
+.search-result-item {
+    display: block;
+    padding: 14px 20px;
+    text-decoration: none;
+    color: inherit;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    cursor: pointer;
+    position: relative;
+    transition: background 0.18s ease;
+}
+.search-result-item:last-child {
+    border-bottom: none;
+}
+.search-result-item:hover {
+    background: rgba(52, 152, 219, 0.08);
+}
+.search-result-title {
+    font-weight: 600;
+    color: #222;
+    font-size: 15.5px;
+    line-height: 1.4;
+    padding-right: 40px;
+}
+.search-result-desc {
+    color: #888;
+    font-size: 13.5px;
+    line-height: 1.6;
+    margin-top: 4px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.search-result-id {
+    position: absolute;
+    right: 14px;
+    top: 12px;
+    font-size: 12px;
+    color: #b0b4bb;
+    font-family: 'Courier New', monospace;
+}
+.search-result-empty {
+    padding: 16px 18px;
+    text-align: center;
+    color: #999;
+    font-size: 14px;
+}
+
+/* 关键词高亮 */
+mark {
+    background: #ffe58a;
+    color: inherit;
+    border-radius: 3px;
+    padding: 0 2px;
+}
+
+/* 搜索结果点击后的目标卡片闪烁 */
+.article-card.search-target {
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.55);
+    transition: box-shadow 0.3s ease;
+}

@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#f4f7fa">
+  <title>Akaros Mail</title>
+  <script>
+    (() => {
+      try {
+        const saved = localStorage.getItem('akaros-mail-theme');
+        document.documentElement.dataset.theme = saved === 'dark' || saved === 'light'
+          ? saved
+          : (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      } catch {
+        document.documentElement.dataset.theme = 'light';
+      }
+    })();
+  </script>
+  <link rel="stylesheet" href="/mail/styles.css?v=2">
+  <script src="/mail/app.js?v=6" defer></script>
+</head>
+<body>
+  <svg class="svg-sprite" aria-hidden="true">
+    <symbol id="i-mail" viewBox="0 0 24 24"><path d="M4 5h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z"/><path d="m3 7 9 6 9-6"/></symbol>
+    <symbol id="i-compose" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z"/></symbol>
+    <symbol id="i-route" viewBox="0 0 24 24"><circle cx="6" cy="5" r="2"/><circle cx="18" cy="19" r="2"/><path d="M6 7v4a3 3 0 0 0 3 3h6a3 3 0 0 1 3 3M14 5h4a2 2 0 0 1 2 2v3"/><path d="m17 7 3 3 3-3"/></symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 6v5h-5"/><path d="M4 18v-5h5"/><path d="M18.5 9A7 7 0 0 0 6 6.5L4 11m16 2-2 4.5A7 7 0 0 1 5.5 15"/></symbol>
+    <symbol id="i-logout" viewBox="0 0 24 24"><path d="M10 17l5-5-5-5m5 5H3"/><path d="M14 3h5a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-5"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></symbol>
+    <symbol id="i-inbox" viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M4 14h4l2 3h4l2-3h4"/></symbol>
+    <symbol id="i-send" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24"><path d="M10.3 3.6 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.6a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4m0 4h.01"/></symbol>
+    <symbol id="i-outbox" viewBox="0 0 24 24"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="m5.5 5.5 1-3h11l1 3L22 12v7a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-7Z"/><path d="M7 13 17 3m-5 0h5v5"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2m3 0-1 15H6L5 6m5 4v7m4-7v7"/></symbol>
+    <symbol id="i-all" viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M4 9h16M9 20V9"/></symbol>
+    <symbol id="i-back" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+    <symbol id="i-reply" viewBox="0 0 24 24"><path d="m9 17-7-5 7-5v3c8 0 11 3 13 9-3-5-7-5-13-5Z"/></symbol>
+    <symbol id="i-forward" viewBox="0 0 24 24"><path d="m15 17 7-5-7-5v3C7 10 4 13 2 19c3-5 7-5 13-5Z"/></symbol>
+    <symbol id="i-paperclip" viewBox="0 0 24 24"><path d="m21.4 11.6-8.9 8.9a6 6 0 0 1-8.5-8.5l9.6-9.6a4 4 0 0 1 5.7 5.7l-9.6 9.6a2 2 0 1 1-2.8-2.8l8.9-8.9"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12m-5-5 5 5 5-5M5 21h14"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20.8 15.3A9 9 0 0 1 8.7 3.2 9 9 0 1 0 20.8 15.3Z"/></symbol>
+  </svg>
+
+  <main id="login-view" class="login-view">
+    <section class="login-card glass" aria-labelledby="login-title">
+      <div class="brand brand-login">
+        <span class="brand-mark"><svg class="icon"><use href="#i-mail"></use></svg></span>
+        <h1 id="login-title">Akaros Mail</h1>
+      </div>
+      <form id="login-form" class="stack">
+        <label class="field">
+          <span>API Key</span>
+          <input id="api-key" name="key" type="password" autocomplete="current-password" required autofocus>
+        </label>
+        <p id="login-error" class="form-error" role="alert" hidden></p>
+        <button class="button primary full" type="submit">登录</button>
+        <details class="api-settings">
+          <summary>API 地址</summary>
+          <label class="field">
+            <span class="sr-only">API 地址</span>
+            <input id="api-base" name="apiBase" type="url" inputmode="url" required spellcheck="false">
+          </label>
+        </details>
+      </form>
+    </section>
+  </main>
+
+  <div id="app" class="app" hidden>
+    <header class="topbar glass">
+      <div class="brand">
+        <span class="brand-mark"><svg class="icon"><use href="#i-mail"></use></svg></span>
+        <span>Akaros Mail</span>
+      </div>
+      <form id="search-form" class="search" role="search">
+        <svg class="icon"><use href="#i-search"></use></svg>
+        <label class="sr-only" for="search-input">搜索</label>
+        <input id="search-input" type="search" placeholder="搜索" autocomplete="off">
+      </form>
+      <div class="top-actions">
+        <button id="theme-button" class="icon-button" type="button" title="切换主题" aria-label="切换主题">
+          <svg class="icon"><use href="#i-moon"></use></svg>
+        </button>
+        <button id="refresh-button" class="icon-button" type="button" title="刷新" aria-label="刷新">
+          <svg class="icon"><use href="#i-refresh"></use></svg>
+        </button>
+        <button id="logout-button" class="button subtle logout-button" type="button">
+          <svg class="icon"><use href="#i-logout"></use></svg><span>退出</span>
+        </button>
+      </div>
+    </header>
+
+    <div class="app-body">
+      <aside class="sidebar glass" aria-label="邮箱导航">
+        <button class="button primary full compose-button" type="button" data-action="compose">
+          <svg class="icon"><use href="#i-compose"></use></svg>写邮件
+        </button>
+        <nav id="folder-nav" class="folder-nav">
+          <button type="button" data-folder="inbox" class="nav-item active"><svg class="icon"><use href="#i-inbox"></use></svg>收件箱</button>
+          <button type="button" data-folder="sent" class="nav-item"><svg class="icon"><use href="#i-send"></use></svg>已发送</button>
+          <button type="button" data-folder="failed" class="nav-item"><svg class="icon"><use href="#i-alert"></use></svg>发件失败</button>
+          <button type="button" data-folder="outbox" class="nav-item"><svg class="icon"><use href="#i-outbox"></use></svg>发件箱</button>
+          <button type="button" data-folder="trash" class="nav-item"><svg class="icon"><use href="#i-trash"></use></svg>垃圾箱</button>
+          <button type="button" data-folder="all" class="nav-item"><svg class="icon"><use href="#i-all"></use></svg>全部邮件</button>
+        </nav>
+        <button type="button" class="nav-item routing-nav" data-action="routing">
+          <svg class="icon"><use href="#i-route"></use></svg>Email Routing
+        </button>
+      </aside>
+
+      <section id="list-panel" class="list-panel glass" aria-label="邮件列表">
+        <div class="panel-heading">
+          <h2 id="folder-title">收件箱</h2>
+          <span id="message-count" class="count"></span>
+        </div>
+        <nav id="mobile-folder-nav" class="mobile-folder-nav" aria-label="文件夹">
+          <button type="button" data-folder="inbox" class="active">收件箱</button>
+          <button type="button" data-folder="sent">已发送</button>
+          <button type="button" data-folder="failed">失败</button>
+          <button type="button" data-folder="outbox">发件箱</button>
+          <button type="button" data-folder="trash">垃圾箱</button>
+          <button type="button" data-folder="all">全部</button>
+        </nav>
+        <div id="message-list" class="message-list" aria-live="polite"></div>
+      </section>
+
+      <section id="detail-panel" class="detail-panel glass" aria-label="邮件详情">
+        <div id="message-detail" class="message-detail">
+          <div class="empty-state">选择邮件</div>
+        </div>
+      </section>
+
+      <section id="routing-panel" class="routing-panel glass" aria-label="Email Routing" hidden>
+        <div id="routing-content"></div>
+      </section>
+    </div>
+
+    <nav class="bottom-nav glass" aria-label="主导航">
+      <button type="button" class="bottom-item active" data-action="mail"><svg class="icon"><use href="#i-mail"></use></svg><span>邮件</span></button>
+      <button type="button" class="bottom-item" data-action="compose"><svg class="icon"><use href="#i-compose"></use></svg><span>写</span></button>
+      <button type="button" class="bottom-item" data-action="routing"><svg class="icon"><use href="#i-route"></use></svg><span>路由</span></button>
+    </nav>
+  </div>
+
+  <div id="compose-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="compose-title" hidden>
+    <div class="modal-backdrop" data-action="close-compose"></div>
+    <section class="compose-card glass">
+      <header class="compose-header">
+        <h2 id="compose-title">写邮件</h2>
+        <button class="icon-button" type="button" data-action="close-compose" title="关闭" aria-label="关闭"><svg class="icon"><use href="#i-close"></use></svg></button>
+      </header>
+      <form id="compose-form" class="compose-form">
+        <div class="compose-scroll">
+          <div class="compose-grid">
+            <label class="field"><span>发件人</span><input id="compose-from" name="from" type="email" value="no-reply@akaros.si" required></label>
+            <label class="field"><span>名称</span><input id="compose-from-name" name="fromName" autocomplete="name"></label>
+          </div>
+          <label class="field"><span>收件人</span><input id="compose-to" name="to" type="text" inputmode="email" autocomplete="off" required></label>
+          <div class="compose-grid">
+            <label class="field"><span>抄送</span><input id="compose-cc" name="cc" type="text" inputmode="email" autocomplete="off"></label>
+            <label class="field"><span>密送</span><input id="compose-bcc" name="bcc" type="text" inputmode="email" autocomplete="off"></label>
+          </div>
+          <label class="field"><span>主题</span><input id="compose-subject" name="subject" type="text"></label>
+          <label class="field body-field"><span>正文</span><textarea id="compose-text" name="text" rows="12"></textarea></label>
+          <input id="compose-in-reply-to" name="inReplyTo" type="hidden">
+          <input id="compose-references" name="references" type="hidden">
+          <div class="attachment-editor">
+            <label class="button subtle file-button" for="compose-files"><svg class="icon"><use href="#i-paperclip"></use></svg>附件</label>
+            <input id="compose-files" class="file-input" type="file" multiple>
+            <span class="attachment-limit">10 MiB</span>
+          </div>
+          <div id="compose-file-list" class="compose-file-list"></div>
+        </div>
+        <footer class="compose-footer">
+          <button class="button primary" id="send-button" type="submit"><svg class="icon"><use href="#i-send"></use></svg>发送</button>
+        </footer>
+      </form>
+    </section>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+</body>
+</html>

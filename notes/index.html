@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://cdn.rrrosmontis.icu/favicon-apple.png">
+    <link rel="icon" type="image/png" href="https://cdn.rrrosmontis.icu/favicon.png" sizes="64x64">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>手记。</title>
+    <style>
+        /* 基础重置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-text-size-adjust: 100%;
+        }
+
+        /* 禁用缩放 */
+        html {
+            touch-action: pan-x pan-y;
+            height: 100%;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: #f5f5f7;
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+        }
+
+        /* 顶部标题 */
+        .header {
+            background: #ffffff;
+            padding: 20px 16px;
+            border-bottom: 1px solid rgba(0,0,0,0.08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(20px);
+            background: rgba(255,255,255,0.9);
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 300;
+            letter-spacing: 1px;
+            color: #2c3e50;
+            text-align: center;
+        }
+
+        /* 日记列表容器 */
+        .diary-list {
+            padding: 16px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+            font-size: 16px;
+        }
+
+        /* 日期分割线 */
+        .date-divider {
+            position: relative;
+            display: flex;
+            align-items: center;
+            margin: 24px 0 16px;
+            color: #888;
+            font-size: 13px;
+        }
+
+        .date-divider:first-child {
+            margin-top: 0;
+        }
+
+        .date-divider::before {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(0,0,0,0.08);
+            margin-right: 12px;
+        }
+
+        .date-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(0,0,0,0.08);
+            margin-left: 12px;
+        }
+
+        .date-label {
+            padding: 0 8px;
+            background: #f5f5f7;
+            color: #666;
+            font-weight: 500;
+        }
+
+        /* 日记项 */
+        .diary-item {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 1px solid rgba(0,0,0,0.05);
+            opacity: 0;
+            transform: translateX(-30px);
+        }
+
+        /* 日记项进入动画 - 只应用于新加载的条目 */
+        .diary-item.new-entry {
+            animation: slideIn 0.5s ease forwards;
+        }
+
+        /* 已有条目直接显示 */
+        .diary-item.existing-entry {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .diary-item:active {
+            transform: scale(0.98);
+        }
+
+        .diary-date {
+            font-size: 13px;
+            color: #7f8c8d;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .diary-content {
+            font-size: 16px;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .delete-btn {
+            background: none;
+            border: none;
+            color: #e74c3c;
+            font-size: 14px;
+            padding: 4px 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.2s, background 0.2s;
+        }
+
+        .diary-item:hover .delete-btn {
+            opacity: 1;
+        }
+
+        .delete-btn:active {
+            background: rgba(231, 76, 60, 0.1);
+        }
+
+        /* 浮动操作按钮 */
+        .fab {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: #3498db;
+            color: white;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+            z-index: 1000;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .fab:active {
+            transform: scale(0.95);
+            box-shadow: 0 2px 6px rgba(52, 152, 219, 0.3);
+        }
+
+        /* 对话框 */
+        .dialog-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .dialog {
+            background: white;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 400px;
+            max-height: 80vh;
+            overflow: hidden;
+            animation: dialogSlide 0.3s ease;
+        }
+
+        @keyframes dialogSlide {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .dialog-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            font-size: 18px;
+            font-weight: 500;
+            color: #2c3e50;
+        }
+
+        .dialog-body {
+            padding: 20px;
+        }
+
+        .dialog-footer {
+            padding: 16px 20px;
+            border-top: 1px solid rgba(0,0,0,0.1);
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        /* 表单元素 */
+        textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 16px;
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: inherit;
+            resize: vertical;
+            margin-bottom: 16px;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        input[type="password"] {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        /* 按钮 */
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-primary:active {
+            background: #2980b9;
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #666;
+        }
+
+        .btn-secondary:active {
+            background: #e9ecef;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 480px) {
+            .header {
+                padding: 16px;
+            }
+            
+            .header h1 {
+                font-size: 24px;
+                text-align: left;
+            }
+            
+            .diary-list {
+                padding: 12px;
+            }
+            
+            .diary-item {
+                padding: 16px;
+            }
+            
+            .fab {
+                width: 52px;
+                height: 52px;
+                font-size: 22px;
+                bottom: 16px;
+                right: 16px;
+            }
+        }
+
+        /* 加载指示器 */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+
+        /* 加载更多提示 */
+        .load-more-container {
+            position: relative;
+            height: 60px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .load-more-tip {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            padding: 20px;
+            color: #999;
+            font-size: 14px;
+            opacity: 0;
+            transform: translateY(0);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        /* 默认显示状态 */
+        .load-more-tip.default {
+            opacity: 1;
+        }
+
+        /* 隐藏动画 */
+        .load-more-tip.hiding {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        /* 显示动画 */
+        .load-more-tip.showing {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        .load-more-tip.showing.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 没有更多内容提示 */
+        .no-more {
+            text-align: center;
+            padding: 30px 20px;
+            color: #ccc;
+            font-size: 14px;
+        }
+
+        /* 消息提示 */
+        .message {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            z-index: 3000;
+            animation: messageFade 3s forwards;
+        }
+
+        @keyframes messageFade {
+            0% { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+            10% { opacity: 1; transform: translateX(-50%) translateY(0); }
+            90% { opacity: 1; transform: translateX(-50%) translateY(0); }
+            100% { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Ne.Lukiffy's Notebook</h1>
+    </div>
+
+    <div class="diary-list" id="diaryList">
+        <div class="loading">加载中...</div>
+    </div>
+
+    <!-- 加载更多提示区域 - 首次加载时隐藏 -->
+    <div id="loadMoreArea" class="load-more-container" style="display: none;">
+        <div class="load-more-tip" id="loadMoreTip">滑到底部加载更多</div>
+        <div class="load-more-tip" id="loadingMoreTip">正在加载更多</div>
+    </div>
+
+    <button class="fab" id="writeBtn">+</button>
+
+    <!-- 写日记对话框 -->
+    <div class="dialog-overlay" id="writeDialog">
+        <div class="dialog">
+            <div class="dialog-header">写日记</div>
+            <div class="dialog-body">
+                <textarea id="diaryContent" placeholder="什么值得记录呢" autofocus></textarea>
+                <input type="password" id="diaryPassword" placeholder="密码">
+            </div>
+            <div class="dialog-footer">
+                <button class="btn btn-secondary" id="cancelWrite">取消</button>
+                <button class="btn btn-primary" id="submitDiary">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 删除确认对话框 -->
+    <div class="dialog-overlay" id="deleteDialog">
+        <div class="dialog">
+            <div class="dialog-header">删除日记</div>
+            <div class="dialog-body">
+                <p style="margin-bottom: 16px;">确定要删除这条日记吗？</p>
+                <input type="password" id="deletePassword" placeholder="输入密码确认">
+            </div>
+            <div class="dialog-footer">
+                <button class="btn btn-secondary" id="cancelDelete">取消</button>
+                <button class="btn btn-primary" id="confirmDelete">删除</button>
+            </div>
+        </div>
+    </div>
+
+    <br><br><br>
+
+    <script>
+        // 禁用手机缩放
+        document.addEventListener('touchstart', function(event) {
+            if (event.touches.length > 1) {
+                event.preventDefault();
+            }
+        }, { passive: false });
+
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function(event) {
+            const now = Date.now();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+
+        document.addEventListener('gesturestart', function(e) {
+            e.preventDefault();
+        });
+
+        // 状态管理
+        let diaries = [];
+        let currentPage = 1;
+        let hasMore = true;
+        let diaryToDelete = null;
+        let isLoading = false;
+        let isInitialLoad = true; // 标记是否首次加载
+        let existingEntriesCount = 0; // 记录已存在的条目数量
+        let loadStartTime = 0; // 记录加载开始时间
+        let isShowingLoading = false; // 标记是否正在显示"正在加载更多"
+
+        // DOM 元素
+        const diaryList = document.getElementById('diaryList');
+        const loadMoreArea = document.getElementById('loadMoreArea');
+        const loadMoreTip = document.getElementById('loadMoreTip');
+        const loadingMoreTip = document.getElementById('loadingMoreTip');
+        const writeBtn = document.getElementById('writeBtn');
+        const writeDialog = document.getElementById('writeDialog');
+        const deleteDialog = document.getElementById('deleteDialog');
+        const diaryContent = document.getElementById('diaryContent');
+        const diaryPassword = document.getElementById('diaryPassword');
+        const deletePassword = document.getElementById('deletePassword');
+        const cancelWrite = document.getElementById('cancelWrite');
+        const submitDiary = document.getElementById('submitDiary');
+        const cancelDelete = document.getElementById('cancelDelete');
+        const confirmDelete = document.getElementById('confirmDelete');
+
+        // 初始化加载更多提示 - 全部隐藏
+        loadMoreArea.style.display = 'none';
+        loadMoreTip.style.display = 'none';
+        loadingMoreTip.style.display = 'none';
+
+        // 初始化
+        loadDiaries();
+
+        // 事件监听
+        writeBtn.addEventListener('click', showWriteDialog);
+        cancelWrite.addEventListener('click', hideWriteDialog);
+        submitDiary.addEventListener('click', saveDiary);
+        cancelDelete.addEventListener('click', hideDeleteDialog);
+        confirmDelete.addEventListener('click', deleteDiary);
+
+        // 监听滚动事件 - 滚动到底部加载更多
+        let scrollTimeout;
+        window.addEventListener('scroll', () => {
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(() => {
+                checkScroll();
+            }, 100);
+        });
+
+        // 显示"正在加载更多"
+        function showLoadingMore() {
+            if (isShowingLoading) return;
+            
+            isShowingLoading = true;
+            
+            // 确保容器显示
+            loadMoreArea.style.display = 'block';
+            
+            // 隐藏"滑到底部加载更多" - 添加淡出动画
+            if (loadMoreTip.style.display !== 'none') {
+                loadMoreTip.classList.remove('default');
+                loadMoreTip.classList.add('hiding');
+            }
+            
+            // 等待淡出动画完成
+            setTimeout(() => {
+                // 隐藏淡出元素
+                loadMoreTip.style.display = 'none';
+                loadMoreTip.classList.remove('hiding');
+                
+                // 显示"正在加载更多" - 先重置状态
+                loadingMoreTip.style.display = 'block';
+                loadingMoreTip.classList.remove('active');
+                loadingMoreTip.classList.add('showing');
+                
+                // 触发重排以确保动画
+                void loadingMoreTip.offsetWidth;
+                
+                // 添加淡入动画
+                loadingMoreTip.classList.add('active');
+            }, 300);
+        }
+
+        // 显示"滑到底部加载更多"
+        function showLoadMore() {
+            if (!isShowingLoading) return;
+            
+            isShowingLoading = false;
+            
+            // 确保容器显示
+            loadMoreArea.style.display = 'block';
+            
+            // 隐藏"正在加载更多" - 添加淡出动画
+            loadingMoreTip.classList.remove('active');
+            loadingMoreTip.classList.add('hiding');
+            
+            // 等待淡出动画完成
+            setTimeout(() => {
+                // 隐藏淡出元素
+                loadingMoreTip.style.display = 'none';
+                loadingMoreTip.classList.remove('showing', 'hiding');
+                
+                // 显示"滑到底部加载更多" - 先重置状态
+                loadMoreTip.style.display = 'block';
+                loadMoreTip.classList.remove('default');
+                loadMoreTip.classList.add('showing');
+                
+                // 触发重排以确保动画
+                void loadMoreTip.offsetWidth;
+                
+                // 添加淡入动画
+                loadMoreTip.classList.add('active');
+                
+                // 完成后设置默认状态
+                setTimeout(() => {
+                    loadMoreTip.classList.remove('showing', 'active');
+                    loadMoreTip.classList.add('default');
+                }, 300);
+            }, 300);
+        }
+
+        // 检查是否需要加载更多
+        function checkScroll() {
+            if (isLoading || !hasMore || isInitialLoad) return;
+            
+            const scrollTop = window.scrollY || document.documentElement.scrollTop;
+            const windowHeight = window.innerHeight;
+            const documentHeight = document.documentElement.scrollHeight;
+            
+            const threshold = 100;
+            
+            if (scrollTop + windowHeight >= documentHeight - threshold) {
+                loadMore();
+            }
+        }
+
+        // 加载日记
+        async function loadDiaries() {
+            if (isLoading) return;
+            
+            isLoading = true;
+            
+            // 记录加载开始时间
+            loadStartTime = Date.now();
+            
+            try {
+                const response = await fetch(`https://api.rrrosmontis.icu/v1/diary/api/diary/contentList?page=${currentPage}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    if (currentPage === 1) {
+                        diaries = data.diaries;
+                    } else {
+                        diaries = [...diaries, ...data.diaries];
+                    }
+                    
+                    hasMore = data.has_more;
+                    
+                    // 如果不是首次加载（即加载更多的情况），确保"正在加载更多"至少显示1秒
+                    if (!isInitialLoad) {
+                        const loadTime = Date.now() - loadStartTime;
+                        const minDisplayTime = 1000; // 最少显示1秒
+                        
+                        if (loadTime < minDisplayTime) {
+                            // 如果加载太快，等待剩余时间
+                            await new Promise(resolve => setTimeout(resolve, minDisplayTime - loadTime));
+                        }
+                    }
+                    
+                    renderDiaries();
+                }
+            } catch (error) {
+                showMessage('加载失败，请重试');
+                if (currentPage === 1) {
+                    diaryList.innerHTML = '<div class="empty-state">加载失败</div>';
+                }
+            } finally {
+                isLoading = false;
+                
+                // 首次加载完成后，根据是否有更多内容显示提示
+                if (isInitialLoad) {
+                    isInitialLoad = false;
+                    
+                    // 首次加载完成，如果有更多内容，显示"滑到底部加载更多"提示
+                    if (hasMore && diaries.length > 0) {
+                        // 显示容器
+                        loadMoreArea.style.display = 'block';
+                        
+                        // 显示"滑到底部加载更多"提示
+                        loadMoreTip.style.display = 'block';
+                        loadMoreTip.classList.add('default');
+                    }
+                } else {
+                    // 加载更多完成后，显示"滑到底部加载更多"提示
+                    showLoadMore();
+                    
+                    // 如果没有更多内容，更新提示
+                    if (!hasMore && diaries.length > 0) {
+                        loadMoreArea.innerHTML = '<div class="no-more">已经到底了</div>';
+                    }
+                }
+                
+                // 如果内容高度不足一屏且有更多内容，自动加载更多
+                if (hasMore && window.innerHeight >= document.documentElement.scrollHeight) {
+                    setTimeout(() => {
+                        loadMore();
+                    }, 500);
+                }
+            }
+        }
+
+        // 渲染日记列表
+        function renderDiaries() {
+            if (diaries.length === 0) {
+                diaryList.innerHTML = '<div class="empty-state">还没有日记<br>点击右下角按钮开始记录</div>';
+                return;
+            }
+
+            let html = '';
+            
+            // 按日期对日记进行分组
+            const groupedDiaries = {};
+            
+            diaries.forEach(diary => {
+                const filename = diary.filename;
+                const dateMatch = filename.match(/^(\d{4}-\d{2}-\d{2})/);
+                const dateStr = dateMatch ? dateMatch[1] : '未知日期';
+                
+                if (!groupedDiaries[dateStr]) {
+                    groupedDiaries[dateStr] = [];
+                }
+                groupedDiaries[dateStr].push(diary);
+            });
+            
+            // 获取日期并排序 (最新的在前)
+            const sortedDates = Object.keys(groupedDiaries).sort().reverse();
+            
+            // 遍历每个日期组
+            sortedDates.forEach(dateStr => {
+                html += `
+                    <div class="date-divider">
+                        <span class="date-label">${dateStr}</span>
+                    </div>
+                `;
+                
+                // 添加该日期的所有日记
+                groupedDiaries[dateStr].forEach((diary, index) => {
+                    const filename = diary.filename.replace('.txt', '');
+                    const dateParts = filename.split('-');
+                    let displayDate = filename;
+                    
+                    if (dateParts.length >= 5) {
+                        const year = dateParts[0];
+                        const month = dateParts[1];
+                        const day = dateParts[2];
+                        const hour = dateParts[3];
+                        const minute = dateParts[4];
+                        displayDate = `${year}.${month}.${day} ${hour}:${minute}`;
+                    }
+                    
+                    // 判断是否为新条目（首次加载后新增的）
+                    const isNewEntry = diaries.length > existingEntriesCount && 
+                                      diaries.indexOf(diary) >= existingEntriesCount;
+                    
+                    const entryClass = isNewEntry ? 'diary-item new-entry' : 'diary-item existing-entry';
+                    
+                    // 为新条目设置动画延迟，实现依次出现效果
+                    const animationDelay = isNewEntry ? (diaries.indexOf(diary) - existingEntriesCount) * 0.05 : 0;
+                    const animationStyle = isNewEntry ? `style="animation-delay: ${animationDelay}s;"` : '';
+                    
+                    html += `
+                        <div class="${entryClass}" ${animationStyle}>
+                            <div class="diary-date">
+                                <span>${displayDate}</span>
+                                <button class="delete-btn" onclick="showDeleteConfirm('${diary.filename}')">删除</button>
+                            </div>
+                            <div class="diary-content">${diary.content}</div>
+                        </div>
+                    `;
+                });
+            });
+
+            diaryList.innerHTML = html;
+            
+            // 更新已存在的条目数量
+            existingEntriesCount = diaries.length;
+        }
+
+        // 加载更多
+        async function loadMore() {
+            if (isLoading || !hasMore) return;
+            
+            // 加载更多时显示"正在加载更多"提示
+            showLoadingMore();
+            
+            currentPage++;
+            await loadDiaries();
+        }
+
+        // 显示写日记对话框
+        function showWriteDialog() {
+            writeDialog.style.display = 'flex';
+            diaryContent.focus();
+        }
+
+        // 隐藏写日记对话框
+        function hideWriteDialog() {
+            writeDialog.style.display = 'none';
+            diaryContent.value = '';
+            diaryPassword.value = '';
+        }
+
+        // 显示删除确认对话框
+        window.showDeleteConfirm = function(filename) {
+            diaryToDelete = filename;
+            deleteDialog.style.display = 'flex';
+            deletePassword.focus();
+        }
+
+        // 隐藏删除对话框
+        function hideDeleteDialog() {
+            deleteDialog.style.display = 'none';
+            diaryToDelete = null;
+            deletePassword.value = '';
+        }
+
+        // 保存日记
+        async function saveDiary() {
+            const content = diaryContent.value.trim();
+            const password = diaryPassword.value;
+
+            if (!content) {
+                showMessage('请输入日记内容');
+                return;
+            }
+
+            if (!password) {
+                showMessage('请输入密码');
+                return;
+            }
+
+            try {
+                const response = await fetch('https://api.rrrosmontis.icu/v1/diary/api/diary/upload', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        content: content,
+                        password: password
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    showMessage('日记保存成功');
+                    hideWriteDialog();
+                    currentPage = 1;
+                    isInitialLoad = true; // 重置为首次加载状态
+                    existingEntriesCount = 0;
+                    loadDiaries();
+                } else {
+                    showMessage(data.error || '保存失败');
+                }
+            } catch (error) {
+                showMessage('保存失败，请重试');
+            }
+        }
+
+        // 删除日记
+        async function deleteDiary() {
+            const password = deletePassword.value;
+
+            if (!password) {
+                showMessage('请输入密码');
+                return;
+            }
+
+            try {
+                const response = await fetch('https://api.rrrosmontis.icu/v1/diary/api/diary/delete', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        filename: diaryToDelete,
+                        password: password
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    showMessage('日记已删除');
+                    hideDeleteDialog();
+                    currentPage = 1;
+                    isInitialLoad = true; // 重置为首次加载状态
+                    existingEntriesCount = 0;
+                    loadDiaries();
+                } else {
+                    showMessage(data.error || '删除失败');
+                }
+            } catch (error) {
+                showMessage('删除失败，请重试');
+            }
+        }
+
+        // 显示消息提示
+        function showMessage(text) {
+            const message = document.createElement('div');
+            message.className = 'message';
+            message.textContent = text;
+            document.body.appendChild(message);
+            
+            setTimeout(() => {
+                message.remove();
+            }, 3000);
+        }
+
+        // 点击对话框外部关闭
+        [writeDialog, deleteDialog].forEach(dialog => {
+            dialog.addEventListener('click', (e) => {
+                if (e.target === dialog) {
+                    dialog.style.display = 'none';
+                    if (dialog === writeDialog) hideWriteDialog();
+                    if (dialog === deleteDialog) hideDeleteDialog();
+                }
+            });
+        });
+
+        // 回车提交
+        diaryPassword.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') saveDiary();
+        });
+
+        deletePassword.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') deleteDiary();
+        });
+    </script>
+</body>
+</html>

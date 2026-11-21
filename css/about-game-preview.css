@@ -1,0 +1,28 @@
+/* Image popover for the two games in the slash-separated About line. */
+.about-game-trigger{
+  appearance:none;border:0;padding:0;background:transparent;color:inherit;
+  font:inherit;line-height:inherit;cursor:pointer;
+  text-decoration:underline;text-decoration-color:rgba(128,128,128,.45);
+  text-underline-offset:3px;
+}
+.about-game-trigger:focus-visible{outline:2px solid #888;outline-offset:3px;border-radius:3px}
+.about-game-preview{
+  position:fixed;z-index:10000;box-sizing:border-box;
+  width:min(480px,calc(100vw - 32px));
+  padding:14px;background:rgba(255,255,255,.97);
+  border:1px solid rgba(255,255,255,.7);border-radius:18px;
+  box-shadow:0 12px 40px rgba(0,0,0,.18);backdrop-filter:blur(12px);
+  visibility:hidden;opacity:0;pointer-events:none;
+  transform:scale(.92);transform-origin:top center;
+  transition:transform .2s ease,opacity .2s ease,visibility .2s;
+  color:#666;font:13px -apple-system,BlinkMacSystemFont,sans-serif;
+}
+.about-game-preview.is-visible{visibility:visible;opacity:1;transform:scale(1);pointer-events:auto}
+.about-game-preview-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}
+.about-game-preview-title{margin:0;font-weight:500}
+.about-game-preview-close{appearance:none;border:0;background:transparent;color:#666;font-size:22px;line-height:1;padding:4px 8px;cursor:pointer}
+.about-game-preview img{display:block;width:100%;height:auto;max-height:55vh;object-fit:contain;border-radius:8px}
+.about-game-preview img[hidden]{display:none}
+.about-game-preview-status{margin:0;text-align:center;padding:24px 8px}
+@media(max-width:767px){.about-game-preview{width:calc(100vw - 32px);padding:12px}.about-game-preview img{max-height:50vh}}
+@media(prefers-reduced-motion:reduce){.about-game-preview{transition:none}}

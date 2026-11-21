@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://cdn.rrrosmontis.icu/favicon-apple.png">
+    <title>Royirin Rosmontis Presents</title>
+    <link rel="icon" type="image/png" href="https://cdn.rrrosmontis.icu/favicon.png" sizes="64x64">
+    <meta name="description" content="有关 Royirin Rosmontis, 即 RRRosmontis 的一些信息、文章和项目。">
+    <meta name="keywords" content="RRRosmontis,RoyirinRosmontis,Royirin Rosmontis,Royirin">
+    <meta name="baidu-site-verification" content="codeva-QUXAgDE3Dy" />
+    <script>
+        (function() {
+            var d = new URLSearchParams(window.location.search).get('device');
+            if (d !== 'mobile' && d !== 'pad' && d !== 'pc') {
+                var w = window.innerWidth;
+                d = w <= 767 ? 'mobile' : (w <= 1024 ? 'pad' : 'pc');
+            }
+            document.documentElement.setAttribute('data-device', d);
+            var link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = 'css/' + d + '.css?v=social-links-5';
+            // 双就绪门：CSS 与 app.js 已设置开屏状态后才显示 body，避免主体早于动画露出。
+            window.__akarosCssReady = false;
+            window.__akarosIntroStateReady = false;
+            window.__akarosRevealBody = function() {
+                if (window.__akarosCssReady && window.__akarosIntroStateReady && document.body) {
+                    document.body.style.visibility = 'visible';
+                }
+            };
+            link.onload = function() {
+                window.__akarosCssReady = true;
+                window.__akarosRevealBody();
+            };
+            link.onerror = function() {
+                window.__akarosCssReady = true;
+                window.__akarosRevealBody();
+            };
+            document.head.appendChild(link);
+            // CSS 加载异常时仍允许 app.js 完成开屏状态后显示页面
+            setTimeout(function() {
+                window.__akarosCssReady = true;
+                window.__akarosRevealBody();
+            }, 3000);
+        })();
+    </script>
+    <link rel="stylesheet" href="/css/article-hover.css?v=rows-stagger-4">
+    <link rel="stylesheet" href="/css/about-game-preview.css?v=1">
+    <link rel="stylesheet" href="/css/achievements.css?v=group-gap-2">
+</head>
+<body style="visibility:hidden;">
+    <div id="intro-animation">
+        <div class="intro-layer layer-1" data-bg-pc="https://cdn.rrrosmontis.icu/rosshadow.png" data-bg-mobile="https://cdn.rrrosmontis.icu/rosvertshadow.png"></div>
+        <div class="intro-layer layer-2" data-bg-pc="https://cdn.rrrosmontis.icu/roswhite.png" data-bg-mobile="https://cdn.rrrosmontis.icu/rosvertwhite.png"></div>
+        <div class="intro-layer layer-3" data-bg-pc="https://cdn.rrrosmontis.icu/ros.png" data-bg-mobile="https://cdn.rrrosmontis.icu/rosvert.png"></div>
+        <div class="intro-progress-bar">
+            <span>\</span><span>\</span><span>\</span><span>\</span><span>\</span><span>\</span><span>\</span><span>\</span><span>\</span><span>\</span><span>\</span><span>\</span><span>\</span><span>\</span>
+        </div>
+    </div>
+
+    <div class="bg-transition-container">
+        <div class="bg-layer" id="bg-layer-0" style="opacity: 1;"></div>
+        <div class="bg-layer" id="bg-layer-1" style="opacity: 0;"></div>
+    </div>
+
+    <div class="topbar">
+        <div class="brand-text">𝓡𝓸𝔂𝓲𝓻𝓲𝓷·𝓡𝓸𝓼𝓶𝓸𝓷𝓽𝓲𝓼</div>
+        <div class="logo-container">
+            <nav class="topbar-nav">
+                <a href="/#About" class="nav-item">About</a>
+                <a href="/#Articles" class="nav-item">Articles</a>
+                <a href="/#Programs" class="nav-item">Programs</a>
+            </nav>
+            <a href="/">
+                <img src="https://cdn.rrrosmontis.icu/logo.png" class="right-logo" alt="网站Logo">
+            </a>
+            <div class="dropdown-menu">
+                <a href="https://space.bilibili.com/246771023?spm_id_from=333.1007.0.0" target="_blank">bilibili →</a>
+                <a href="https://x.com/0_rosmontis_0" target="_blank">X →</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="mobile-nav-row mobile-only">
+        <a href="#About" class="nav-item">About</a>
+        <a href="#Articles" class="nav-item">Articles</a>
+        <a href="#Programs" class="nav-item">Programs</a>
+    </div>
+
+    <a href="/" class="y2k-banner" style="display:none;"><span class="y2k-led"><marquee scrollamount="6" scrolldelay="70"><span style="color:#ff71ce">※</span> <span style="color:#ffd319">限</span><span style="color:#05ffa1">时</span><span style="color:#01cdfe">开</span><span style="color:#b967ff">放</span><span style="color:#ff71ce">：</span><span style="color:#ffd319">千</span><span style="color:#05ffa1">禧</span><span style="color:#01cdfe">年</span><span style="color:#b967ff">风</span><span style="color:#ff71ce">特</span><span style="color:#ffd319">别</span><span style="color:#05ffa1">页</span><span style="color:#01cdfe">面</span><span style="color:#b967ff">~</span> <span style="color:#ff71ce">点</span><span style="color:#ffd319">击</span><span style="color:#05ffa1">访</span><span style="color:#01cdfe">问</span> <span style="color:#b967ff">→</span>　<span style="color:#ff71ce">※</span> <span style="color:#ffd319">限</span><span style="color:#05ffa1">时</span><span style="color:#01cdfe">开</span><span style="color:#b967ff">放</span><span style="color:#ff71ce">：</span><span style="color:#ffd319">千</span><span style="color:#05ffa1">禧</span><span style="color:#01cdfe">年</span><span style="color:#b967ff">风</span><span style="color:#ff71ce">特</span><span style="color:#ffd319">别</span><span style="color:#05ffa1">页</span><span style="color:#01cdfe">面</span><span style="color:#b967ff">~</span> <span style="color:#ff71ce">点</span><span style="color:#ffd319">击</span><span style="color:#05ffa1">访</span><span style="color:#01cdfe">问</span> <span style="color:#b967ff">→</span>　</marquee></span></a>
+
+    <div class="footer">
+        <p class="desktop-footer">© 2025-<span id="copy-year-pc"></span> Royirin Rosmontis. All rights reserved. | <a class="beian" href="https://beian.miit.gov.cn" id="beian" target="_blank">辽ICP备2025070628号</a></p>
+        <div class="mobile-footer mobile-only">
+            <p class="copyright-large">© <span id="copy-year-mobile"></span> Royirin Rosmontis. All rights reserved.</p>
+            <a class="beian-small" href="https://beian.miit.gov.cn" target="_blank">辽ICP备2025070628号</a>
+        </div>
+    </div>
+
+    <br>
+    <div id="dynamic-content">
+        <div id="line-number"></div>
+        <div id="content-text"></div>
+    </div>
+
+    <hr class="custom-hr"><br>
+
+    <img src="https://cdn.rrrosmontis.icu/rrrosmontis.png" class="fixed-image" alt="Decoration">
+    <img src="https://cdn.rrrosmontis.icu/rrrosmontis.png" class="fixed-image-mobile" alt="Decoration">
+
+    <div class="dialog-box main-dialog">
+        <div class="dialog-content">
+            <div class="dialog-text">有什么想对我说的嘛？</div>
+            <textarea class="dialog-input" rows="3"></textarea>
+            <button class="dialog-button">发送</button>
+        </div>
+    </div>
+
+    <div class="dialog-box loading-dialog">
+        <div class="dialog-content">
+            <div class="dialog-text">容我想想......</div>
+        </div>
+    </div>
+
+    <div class="dialog-box result-dialog">
+        <div class="dialog-content">
+            <div class="dialog-text result-content"></div>
+            <button class="dialog-button confirm-button">确认</button>
+        </div>
+    </div>
+
+    <div id="body-content">
+<div class="additional-box main-section" id="About">
+    <div class="title-container">
+        <h1>About</h1>
+    </div>
+    <div class="content-info-text social-links">
+        <a href="https://space.bilibili.com/246771023?spm_id_from=333.1007.0.0" target="_blank" rel="noopener noreferrer" aria-label="bilibili"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M17.813 4.653h.854q2.266.08 3.773 1.574Q23.946 7.72 24 9.987v7.36q-.054 2.266-1.56 3.773c-1.506 1.507-2.262 1.524-3.773 1.56H5.333q-2.266-.054-3.773-1.56C.053 19.614.036 18.858 0 17.347v-7.36q.054-2.267 1.56-3.76t3.773-1.574h.774l-1.174-1.12a1.23 1.23 0 0 1-.373-.906q0-.534.373-.907l.027-.027q.4-.373.92-.373t.92.373L9.653 4.44q.107.106.187.213h4.267a.8.8 0 0 1 .16-.213l2.853-2.747q.4-.373.92-.373c.347 0 .662.151.929.4s.391.551.391.907q0 .532-.373.906zM5.333 7.24q-1.12.027-1.88.773q-.76.748-.786 1.894v7.52q.026 1.146.786 1.893t1.88.773h13.334q1.12-.026 1.88-.773t.786-1.893v-7.52q-.026-1.147-.786-1.894t-1.88-.773zM8 11.107q.56 0 .933.373q.375.374.4.96v1.173q-.025.586-.4.96q-.373.375-.933.374c-.56-.001-.684-.125-.933-.374q-.375-.373-.4-.96V12.44q0-.56.386-.947q.387-.386.947-.386m8 0q.56 0 .933.373q.375.374.4.96v1.173q-.025.586-.4.96q-.373.375-.933.374c-.56-.001-.684-.125-.933-.374q-.375-.373-.4-.96V12.44q.025-.586.4-.96q.373-.373.933-.373"/></svg></a>
+        <span class="social-divider" aria-hidden="true">|</span>
+        <a href="https://x.com/0_rosmontis_0" target="_blank" rel="noopener noreferrer" aria-label="X"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M14.234 10.162L22.977 0h-2.072l-7.591 8.824L7.251 0H.258l9.168 13.343L.258 24H2.33l8.016-9.318L16.749 24h6.993zm-2.837 3.299l-.929-1.329L3.076 1.56h3.182l5.965 8.532l.929 1.329l7.754 11.09h-3.182z"/></svg></a>
+        <span class="social-divider" aria-hidden="true">|</span>
+        <a href="https://github.com/RRRosmontis/" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 .297c-6.63 0-12 5.373-12 12c0 5.303 3.438 9.8 8.205 11.385c.6.113.82-.258.82-.577c0-.285-.01-1.04-.015-2.04c-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729c1.205.084 1.838 1.236 1.838 1.236c1.07 1.835 2.809 1.305 3.495.998c.108-.776.417-1.305.76-1.605c-2.665-.3-5.466-1.332-5.466-5.93c0-1.31.465-2.38 1.235-3.22c-.135-.303-.54-1.523.105-3.176c0 0 1.005-.322 3.3 1.23c.96-.267 1.98-.399 3-.405c1.02.006 2.04.138 3 .405c2.28-1.552 3.285-1.23 3.285-1.23c.645 1.653.24 2.873.12 3.176c.765.84 1.23 1.91 1.23 3.22c0 4.61-2.805 5.625-5.475 5.92c.42.36.81 1.096.81 2.22c0 1.606-.015 2.896-.015 3.286c0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>
+        <span class="social-divider" aria-hidden="true">|</span>
+        <a href="mailto:royirin@rrrosmontis.icu" aria-label="邮箱"><svg viewBox="0 0 512 512" aria-hidden="true"><path fill="currentColor" d="M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4l217.6 163.2c11.4 8.5 27 8.5 38.4 0l217.6-163.2c12.1-9.1 19.2-23.3 19.2-38.4c0-26.5-21.5-48-48-48zM0 176v208c0 35.3 28.7 64 64 64h384c35.3 0 64-28.7 64-64V176L294.4 339.2a63.9 63.9 0 0 1-76.8 0z"/></svg></a>
+    </div>
+    <br><br>
+    <p class="additional-box-p-mobile">CN / INFJ / Minecraft / <button type="button" class="about-game-trigger" data-game-image="https://cdn.rrrosmontis.icu/ark.png" aria-haspopup="dialog" aria-controls="about-game-preview" aria-expanded="false">Arknights</button> / BanG Dream / <button type="button" class="about-game-trigger" data-game-image="https://cdn.rrrosmontis.icu/arcaea.png" aria-haspopup="dialog" aria-controls="about-game-preview" aria-expanded="false">Arcaea</button> / Cyberpunk / Galgame / Touhou / Vtuber / Vocaloid</p><br><br>
+
+    <section class="achievements" aria-labelledby="achievements-heading">
+        <h2 class="achievements-title" id="achievements-heading">Achievements</h2>
+
+        <div class="achievement-year">
+            <div class="achievement-year-label">2026</div>
+            <div class="achievement-rail" aria-hidden="true"></div>
+            <ul class="achievement-items">
+                <li><span class="achievement-line"><span class="achievement-break">Applied Soft Computing:</span><span class="achievement-tail">RIDER: Residual Inference Drives Evidence-Based Routing for Agentic Tool Selection | <span style="font-style: italic;">Under review</span></span></span></li>
+                <li><span class="achievement-line"><span class="achievement-break">COLING 2027:</span><span class="achievement-tail" style="font-style: italic;">Under anonymous review</span></span></li>
+                <li><span class="achievement-line"><span class="achievement-break">CFRIC 2026:</span><span class="achievement-tail">Machine-Generated Alpha and Market-Rule Economic Evidence: Auditing Financial AI under China’s A-Share Price Limits</span></span></li>
+                <li><span class="achievement-line"><span class="achievement-break">EMNLP 2026 Findings:</span><span class="achievement-tail">Caught in the Story: Narrative Captivity in Multi-turn LLMs Conversation</span></span></li>
+            </ul>
+        </div>
+
+        <div class="achievement-year">
+            <div class="achievement-year-label">2025</div>
+            <div class="achievement-rail" aria-hidden="true"></div>
+            <ul class="achievement-items">
+                <li><span class="achievement-line">Entered DUFE</span></li>
+            </ul>
+        </div>
+    </section>
+
+</div>
+
+<div class="additional-box collapsible-section main-section" id="Articles">
+    <h1>Articles</h1>
+    <hr class="pc-divider">
+    <hr class="mobile-divider mobile-only">
+    
+    <div class="article-box" id="home-articles">
+        <p class="articles-loading" style="color:#999;">文章列表加载中</p>
+        <!-- 最新文章由 js/articles.js 从 articles 目录动态加载（最新 5 篇） -->
+    </div>
+
+    <p class="more-articles-link"><a href="/articles/index.html">更多文章请点此前往文章索引</a></p>
+</div>
+
+<div class="additional-box collapsible-section main-section" id="Programs">
+    <h1>Programs</h1>
+     <hr class="pc-divider">
+    <hr class="mobile-divider mobile-only">
+    
+    <div class="article-box program-entries">
+        <a href="https://rosmanka.rrrosmontis.icu/services/slm/" class="article-title-box program-entry entry-left" target="_blank" style="color:#666;text-decoration:none;"><span class="entry-name">直播 |</span><span class="entry-en">T S U K U Y O M I</span></a>
+        <a href="https://rosmanka.rrrosmontis.icu/services/npo/" class="article-title-box program-entry entry-left" target="_blank" style="color:#666;text-decoration:none;"><span class="entry-name">邮箱 |</span><span class="entry-en">Ne.Lukiffy's Mailbox</span></a>
+        <!--
+        <a href="/notes/" class="article-title-box program-entry entry-left" target="_blank" style="color:#666;text-decoration:none;"><span class="entry-name">手记 |</span><span class="entry-en">Ne.Lukiffy's Notebook</span></a>
+        -->
+        <a href="https://rosmanka.rrrosmontis.icu/services/xbp/" class="article-title-box program-entry entry-left" target="_blank" style="color:#666;text-decoration:none;"><span class="entry-name">代理 |</span><span class="entry-en">Royirin Rosmontis Private Proxy</span></a>
+        <a href="https://rosmanka.rrrosmontis.icu/services/pvd/" class="article-title-box program-entry entry-left" target="_blank" style="color:#666;text-decoration:none;"><span class="entry-name">仓库 |</span><span class="entry-en">arkGit</span></a>
+    </div>
+
+    <div class="program-shortcuts">
+        <div class="program-shortcut program-dropdown" id="toolsShortcut">
+            <span class="shortcut-title">实用工具</span>
+            <div class="program-dropdown-options">
+                <a href="/programs/tools/markdown" class="program-dropdown-option" target="_blank">Markdown编辑器</a>
+            </div>
+        </div>
+        <div class="program-shortcut program-dropdown" id="gamesShortcut">
+            <span class="shortcut-title">在线游戏</span>
+            <div class="program-dropdown-options">
+                <a href="/programs/games/2048" class="program-dropdown-option" target="_blank">2048</a>
+                <a href="/programs/games/minesweeper" class="program-dropdown-option" target="_blank">扫雷</a>
+                <a href="/programs/games/xterfusion" class="program-dropdown-option" target="_blank">xterfusion盒</a>
+                <a href="/programs/games/thunder-fighter/" class="program-dropdown-option" target="_blank">雷霆战机</a>
+            </div>
+        </div>
+    </div>
+
+        <p class="more-articles-link">Supported by <a href="https://rosmanka.rrrosmontis.icu/" target="_blank" class="rosmanka-glow">Rosmanka Inc.</a></p>
+    </div>
+
+    </div>
+
+    <div class="extra-link">
+        <a href="https://rosmanka.rrrosmontis.icu/services/ncs/" target="_blank" rel="noopener noreferrer">服务器状态监控 ➚</a>
+    </div>
+
+    <div class="footer-credits pc-only" style="display:flex;justify-content:center;align-items:flex-start;gap:clamp(12px,2vw,20px);max-width:720px;margin:50px auto 110px;padding:0 24px;">
+        <div class="contributor-credit" style="flex:0 1 340px;margin:0;">
+            - Contributor -<br>
+            Program: Royirin Rosmontis / ZCytj<br>
+            Animation: Royirin Rosmontis / La Floraine<br>
+            illustration: La Furinne / 矽奈言
+        </div>
+        <div class="contributor-credit" style="flex:0 1 340px;margin:0;">
+            - About akaros.si -<br>
+            It's Royirin Rosmontis, aka ros,<br>
+            It's Rossi, A girl in Arknights: Endfield,<br>
+            It's SI, Super Intelligence.
+        </div>
+    </div>
+
+    <div class="contributor-credit mobile-only">
+        <br>
+        <br>
+        - Contributor -<br>
+        Program: Royirin Rosmontis / ZCytj<br>
+        Animation: Royirin Rosmontis / La Floraine<br>
+        illustration: La Furinne / 矽奈言
+    </div>
+    <div class="contributor-credit mobile-only">
+        - About akaros.si -<br>
+        It's Royirin Rosmontis, aka ros,<br>
+        It's Rossi, A girl in Arknights: Endfield,<br>
+        It's SI, Super Intelligence.
+    </div>
+
+    <script src="js/app.js?v=logo-click-1"></script>
+    <script src="js/articles.js?v=rows-stagger-4"></script>
+    <script src="/js/about-game-preview.js?v=2"></script>
+    <script src="https://cdn.rrrosmontis.icu/js/copyright_get_time.js"></script>
+    <script src="https://cdn.rrrosmontis.icu/js/beian_visibility.js"></script>
+
+
+    <script>
+        // 设备 CSS 热切换（窗口缩放跨档时自动换 css）+ 移动端 Programs 条目超长文字跑马灯
+        (function() {
+            var html = document.documentElement;
+
+            function deviceFor(w) { return w <= 767 ? 'mobile' : (w <= 1024 ? 'pad' : 'pc'); }
+
+            // ---- 移动端跑马灯：进入 mobile 时启用，离开时还原 ----
+            // 用离屏探针测量文本原始宽度，避免依赖元素当前 DOM/布局状态
+            function measureTextWidth(el, text) {
+                var cs = getComputedStyle(el);
+                var probe = document.createElement('span');
+                probe.style.cssText = 'position:absolute;visibility:hidden;white-space:nowrap;letter-spacing:' + cs.letterSpacing + ';';
+                probe.style.font = cs.font;
+                probe.textContent = text;
+                document.body.appendChild(probe);
+                var w = probe.scrollWidth;
+                probe.remove();
+                return w;
+            }
+            // 幂等校准：溢出则启用滚动，不溢出则还原，可随时重复调用
+            function setupEntryMarquee() {
+                document.querySelectorAll('#Programs .program-entry .entry-en').forEach(function(en) {
+                    if (!en.dataset.text) en.dataset.text = en.textContent.trim();
+                    var active = en.classList.contains('marquee-active');
+                    var overflow = measureTextWidth(en, en.dataset.text) > en.clientWidth + 1;
+                    if (overflow && !active) {
+                        var t = en.dataset.text;
+                        en.innerHTML = '<span class="marquee-track"><span>' + t + '</span><span aria-hidden="true">' + t + '</span></span>';
+                        en.classList.add('marquee-active');
+                    } else if (!overflow && active) {
+                        en.textContent = en.dataset.text;
+                        en.classList.remove('marquee-active');
+                    }
+                });
+            }
+            // 双次校准：样式切换的 transition 期间尺寸不可信，第一次尽快生效，第二次兜底修正
+            function scheduleMarqueeReconcile() {
+                setTimeout(setupEntryMarquee, 300);
+                setTimeout(setupEntryMarquee, 1500);
+            }
+            function teardownEntryMarquee() {
+                document.querySelectorAll('#Programs .program-entry .entry-en.marquee-active').forEach(function(en) {
+                    if (en.dataset.text) en.textContent = en.dataset.text;
+                    en.classList.remove('marquee-active');
+                });
+            }
+
+            // ---- 设备 css 热切换：继承原链接的版本号，新 css 就绪后再移除旧链接 ----
+            function switchDeviceCss(d) {
+                var found = null;
+                document.querySelectorAll('link[rel="stylesheet"]').forEach(function(l) {
+                    var m = l.href.match(/^(.*css\/)(?:mobile|pad|pc)(\.css.*)$/);
+                    if (m) found = { el: l, m: m };
+                });
+                html.setAttribute('data-device', d);
+                if (!found) { location.reload(); return; }
+                var nl = found.el.cloneNode();
+                nl.href = found.m[1] + d + found.m[2];
+                nl.addEventListener('load', function() {
+                    found.el.remove();
+                    // 等样式真正应用、完成一次布局后再测量，避免拿到中间态尺寸
+                    scheduleMarqueeReconcile();
+                });
+                found.el.parentNode.insertBefore(nl, found.el.nextSibling);
+                setTimeout(function() { if (found.el.parentNode) found.el.remove(); }, 3000);
+            }
+
+            var resizeTimer;
+            window.addEventListener('resize', function() {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(function() {
+                    var d = deviceFor(window.innerWidth);
+                    if (d === html.getAttribute('data-device')) return;
+                    teardownEntryMarquee();
+                    switchDeviceCss(d);
+                }, 250);
+            });
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', scheduleMarqueeReconcile);
+            } else {
+                scheduleMarqueeReconcile();
+            }
+        })();
+    </script>
+</body>
+</html>

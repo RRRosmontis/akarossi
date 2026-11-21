@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<title>Redirect Page</title>
+<script>
+(function () {
+  'use strict';
+
+  /* 取 URL 路径的最后一段作为“口令”
+     例如 https://akaros.si/t/fur  ->  "fur"
+          https://akaros.si/t/fur/ ->  "fur"
+          https://akaros.si/t/     ->  ""  （无口令 -> 回根域名） */
+
+  function getEndpoint() {
+    var path = window.location.pathname.replace(/\/+$/, ''); // 去掉末尾斜杠
+    if (!path || path === '/t' || path === '/t/index.html') return '';
+    var segments = path.split('/');
+    var last = segments[segments.length - 1] || '';
+    try { last = decodeURIComponent(last); } catch (e) { /* 忽略解码失败 */ }
+    return last;
+  }
+
+  var endpoint = getEndpoint();
+
+  if (!endpoint) {
+    // 没有口令 -> 回到站点根域名，例如 https://akaros.si/
+    window.location.replace(window.location.origin + '/');
+    return;
+  }
+
+  fetch('/t/redirect.json', { cache: 'no-cache' })
+    .then(function (res) {
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return res.json();
+    })
+    .then(function (map) {
+      if (!map || typeof map !== 'object') {
+        throw new Error('redirect.json 格式不正确');
+      }
+      var target = map[endpoint];
+      if (typeof target !== 'string' || target === '') {
+        // 没有匹配的口令，保持静止
+        console.warn('[redirect] 未找到口令 "' + endpoint + '" 的跳转目标');
+        return;
+      }
+      // 使用 replace，避免用户点“返回”又回到这里
+      window.location.replace(target);
+    })
+    .catch(function (err) {
+      console.error('[redirect] 跳转失败：', err);
+    });
+})();
+</script>
+</head>
+<body></body>
+</html>

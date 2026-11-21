@@ -1,0 +1,156 @@
+/* About: Achievements timeline. Year column on the left, content on the right. */
+.achievements{
+  max-width:800px;
+  margin:48px auto 24px;
+  text-align:left;
+  font-family:-apple-system,-apple-system,BlinkMacSystemFont,sans-serif;
+  color:rgba(80,80,80,.9);
+}
+.achievements-title{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:18px;
+  margin:0 0 32px;
+  text-align:center;
+  font-size:1.35rem;
+  font-weight:600;
+  letter-spacing:.08em;
+}
+.achievements-title::before,
+.achievements-title::after{
+  content:"";
+  width:28px;
+  height:2px;
+  flex:none;
+  background:currentColor;
+  opacity:.9;
+}
+.achievement-year{
+  /* One shared geometry: the year label is given the dot's exact top offset and
+     exact height, so both centre lines meet in the middle of the same row band.
+     Change these two values and the label follows the dot automatically. */
+  --achievement-dot-size:10px;
+  --achievement-rail-top:4px;
+  --achievement-label-left:38px;
+  position:relative;
+  display:grid;
+  grid-template-columns:84px 28px minmax(0,1fr);
+  align-items:start;
+  column-gap:0;
+  padding-top:1em;
+}
+.achievement-year + .achievement-year{margin-top:18px}
+.achievement-year-label{
+  position:absolute;
+  left:var(--achievement-label-left);
+  top:var(--achievement-rail-top);
+  box-sizing:border-box;
+  display:flex;
+  align-items:center;
+  height:var(--achievement-dot-size);
+  z-index:1;
+  font-size:1.05rem;
+  font-weight:600;
+  white-space:nowrap;
+  color:rgba(40,40,40,.92);
+}
+.achievement-rail{
+  position:absolute;
+  left:84px;
+  top:var(--achievement-rail-top);
+  bottom:0;
+  width:28px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+.achievement-rail::before{
+  content:"";
+  width:var(--achievement-dot-size);
+  height:var(--achievement-dot-size);
+  flex:none;
+  border-radius:50%;
+  background:currentColor;
+}
+.achievement-rail::after{
+  content:"";
+  width:2px;
+  flex:1 1 auto;
+  min-height:18px;
+  margin-top:6px;
+  background:rgba(40,40,40,.75);
+}
+.achievement-items{
+  grid-column:3;
+  min-width:0;
+  margin:0;
+  padding:0 0 0 14px;
+  list-style:none;
+}
+.achievement-items li{
+  margin:0;
+  font-size:1rem;
+  line-height:1.9;
+  overflow-wrap:normal;
+  word-break:normal;
+}
+.achievement-items li + li{margin-top:14px}
+/* The first line is a real flex row: the bullet and its text share one centerline.
+   Do not reintroduce absolute top offsets; every new item gets the same alignment. */
+.achievement-line{
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  column-gap:8px;
+  row-gap:0;
+  min-width:0;
+}
+.achievement-line::before{
+  content:"";
+  flex:0 0 4px;
+  width:4px;
+  height:4px;
+  border-radius:50%;
+  background:currentColor;
+}
+.achievement-break{
+  flex:0 0 auto;
+  white-space:nowrap;
+}
+.achievement-tail{
+  flex:1 1 0;
+  min-width:0;
+  white-space:normal;
+  overflow-wrap:anywhere;
+  font-family:"Latin Modern Roman","Computer Modern","STIX Two Text","Times New Roman",Georgia,serif;
+  font-size:.98em;
+  letter-spacing:.005em;
+}
+@media(max-width:767px){
+  .achievements{margin-top:36px}
+  .achievements-title{font-size:1.18rem;gap:12px}
+  .achievements-title::before,
+  .achievements-title::after{width:20px}
+  .achievement-year + .achievement-year{margin-top:18px}
+  .achievement-year{
+    --achievement-label-left:20px;
+    grid-template-columns:62px 24px minmax(0,1fr);
+    padding-top:1em;
+  }
+  .achievement-rail{left:62px;width:24px}
+  .achievement-year-label{font-size:.92rem}
+  .achievement-items{padding-left:10px;font-size:.86rem;line-height:1.85}
+  .achievement-line{
+    display:grid;
+    grid-template-columns:4px minmax(0,1fr);
+    align-items:center;
+    column-gap:8px;
+  }
+  .achievement-line::before{grid-column:1;grid-row:1}
+  .achievement-break{grid-column:2;grid-row:1;white-space:normal}
+  .achievement-tail{grid-column:2;grid-row:2;display:block;padding-left:0}
+}
+@media(prefers-reduced-motion:reduce){
+  .achievements *{scroll-behavior:auto !important}
+}
