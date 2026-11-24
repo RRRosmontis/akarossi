@@ -3,23 +3,14 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="color-scheme" content="light dark">
-  <meta name="theme-color" content="#f4f7fa">
-  <title>Akaros Mail</title>
-  <script>
-    (() => {
-      try {
-        const saved = localStorage.getItem('akaros-mail-theme');
-        document.documentElement.dataset.theme = saved === 'dark' || saved === 'light'
-          ? saved
-          : (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-      } catch {
-        document.documentElement.dataset.theme = 'light';
-      }
-    })();
-  </script>
-  <link rel="stylesheet" href="/mail/styles.css?v=2">
-  <script src="/mail/app.js?v=6" defer></script>
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#161616">
+  <title>Rossi Mail</title>
+  <link rel="icon" type="image/svg+xml" href="https://cdn.rrrosmontis.icu/rossi/favicon-84a4ba4f496d.svg">
+  <link rel="preconnect" href="https://cdn.rrrosmontis.icu" crossorigin>
+  <link rel="preload" href="https://cdn.rrrosmontis.icu/rossi/saira-9d050fc5a01c.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="stylesheet" href="styles.css?v=3">
+  <script src="app.js?v=7" defer></script>
 </head>
 <body>
   <svg class="svg-sprite" aria-hidden="true">
@@ -41,53 +32,66 @@
     <symbol id="i-paperclip" viewBox="0 0 24 24"><path d="m21.4 11.6-8.9 8.9a6 6 0 0 1-8.5-8.5l9.6-9.6a4 4 0 0 1 5.7 5.7l-9.6 9.6a2 2 0 1 1-2.8-2.8l8.9-8.9"/></symbol>
     <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12m-5-5 5 5 5-5M5 21h14"/></symbol>
     <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
-    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/></symbol>
-    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20.8 15.3A9 9 0 0 1 8.7 3.2 9 9 0 1 0 20.8 15.3Z"/></symbol>
+    <symbol id="i-settings" viewBox="0 0 24 24"><path d="M4 7h16M4 17h16"/><path d="M8 4v6M16 14v6"/><path d="M5 4h6v6H5zM13 14h6v6h-6z"/></symbol>
   </svg>
 
   <main id="login-view" class="login-view">
-    <section class="login-card glass" aria-labelledby="login-title">
-      <div class="brand brand-login">
-        <span class="brand-mark"><svg class="icon"><use href="#i-mail"></use></svg></span>
-        <h1 id="login-title">Akaros Mail</h1>
-      </div>
-      <form id="login-form" class="stack">
-        <label class="field">
-          <span>API Key</span>
-          <input id="api-key" name="key" type="password" autocomplete="current-password" required autofocus>
-        </label>
-        <p id="login-error" class="form-error" role="alert" hidden></p>
-        <button class="button primary full" type="submit">登录</button>
-        <details class="api-settings">
-          <summary>API 地址</summary>
+    <div class="login-shell">
+      <section class="login-intro" aria-labelledby="login-title">
+        <span class="eyebrow">// MAIL CLIENT</span>
+        <h1 id="login-title">ROSSI <span>MAIL</span></h1>
+        <p>邮件收发、搜索与转发设置</p>
+        <div class="tri-bar" aria-hidden="true"><i></i><i></i><i></i></div>
+        <div class="function-rotator" aria-hidden="true">
+          <span>FUNCTION</span>
+          <span class="rotator-window"><span class="function-rotator-text">INBOX</span></span>
+        </div>
+      </section>
+      <section class="login-card glass" aria-label="邮箱登录">
+        <div class="card-heading"><span class="eyebrow">// SIGN IN</span><h2>邮箱登录</h2></div>
+        <form id="login-form" class="stack">
           <label class="field">
-            <span class="sr-only">API 地址</span>
-            <input id="api-base" name="apiBase" type="url" inputmode="url" required spellcheck="false">
+            <span>邮箱密钥</span>
+            <input id="api-key" name="key" type="password" autocomplete="current-password" required autofocus>
           </label>
-        </details>
-      </form>
-    </section>
+          <p id="login-error" class="form-error" role="alert" hidden></p>
+          <button class="button primary full cut-button" type="submit">登录</button>
+          <details class="api-settings">
+            <summary>服务器设置</summary>
+            <label class="field">
+              <span>API 地址</span>
+              <input id="api-base" name="apiBase" type="url" inputmode="url" required spellcheck="false">
+            </label>
+          </details>
+        </form>
+      </section>
+      <figure class="login-artwork" aria-hidden="true">
+        <img src="https://cdn.rrrosmontis.icu/rossi/rossi-c6ba909ef9dc.webp" alt="" decoding="async">
+      </figure>
+    </div>
   </main>
 
   <div id="app" class="app" hidden>
     <header class="topbar glass">
       <div class="brand">
-        <span class="brand-mark"><svg class="icon"><use href="#i-mail"></use></svg></span>
-        <span>Akaros Mail</span>
+        <span class="brand-mark" aria-hidden="true">R</span>
+        <span class="brand-name">ROSSI <strong>MAIL</strong></span>
+      </div>
+      <div class="function-rotator" aria-hidden="true">
+        <span>FUNCTION</span>
+        <span class="rotator-window"><span class="function-rotator-text">INBOX</span></span>
       </div>
       <form id="search-form" class="search" role="search">
         <svg class="icon"><use href="#i-search"></use></svg>
-        <label class="sr-only" for="search-input">搜索</label>
-        <input id="search-input" type="search" placeholder="搜索" autocomplete="off">
+        <label class="sr-only" for="search-input">搜索邮件</label>
+        <input id="search-input" type="search" placeholder="搜索发件人、主题或内容" autocomplete="off">
       </form>
       <div class="top-actions">
-        <button id="theme-button" class="icon-button" type="button" title="切换主题" aria-label="切换主题">
-          <svg class="icon"><use href="#i-moon"></use></svg>
-        </button>
+        <span id="account-label" class="account-label"></span>
         <button id="refresh-button" class="icon-button" type="button" title="刷新" aria-label="刷新">
           <svg class="icon"><use href="#i-refresh"></use></svg>
         </button>
-        <button id="logout-button" class="button subtle logout-button" type="button">
+        <button id="logout-button" class="button subtle logout-button cut-button" type="button">
           <svg class="icon"><use href="#i-logout"></use></svg><span>退出</span>
         </button>
       </div>
@@ -95,53 +99,68 @@
 
     <div class="app-body">
       <aside class="sidebar glass" aria-label="邮箱导航">
-        <button class="button primary full compose-button" type="button" data-action="compose">
+        <button class="button primary full compose-button cut-button" type="button" data-action="compose">
           <svg class="icon"><use href="#i-compose"></use></svg>写邮件
         </button>
         <nav id="folder-nav" class="folder-nav">
-          <button type="button" data-folder="inbox" class="nav-item active"><svg class="icon"><use href="#i-inbox"></use></svg>收件箱</button>
-          <button type="button" data-folder="sent" class="nav-item"><svg class="icon"><use href="#i-send"></use></svg>已发送</button>
-          <button type="button" data-folder="failed" class="nav-item"><svg class="icon"><use href="#i-alert"></use></svg>发件失败</button>
-          <button type="button" data-folder="outbox" class="nav-item"><svg class="icon"><use href="#i-outbox"></use></svg>发件箱</button>
-          <button type="button" data-folder="trash" class="nav-item"><svg class="icon"><use href="#i-trash"></use></svg>垃圾箱</button>
-          <button type="button" data-folder="all" class="nav-item"><svg class="icon"><use href="#i-all"></use></svg>全部邮件</button>
+          <span class="nav-section-label">// MAILBOX</span>
+          <button type="button" data-folder="inbox" class="nav-item active"><svg class="icon"><use href="#i-inbox"></use></svg><span>收件箱</span><small>INBOX</small></button>
+          <button type="button" data-folder="sent" class="nav-item"><svg class="icon"><use href="#i-send"></use></svg><span>已发送</span><small>SENT</small></button>
+          <button type="button" data-folder="trash" class="nav-item"><svg class="icon"><use href="#i-trash"></use></svg><span>垃圾箱</span><small>TRASH</small></button>
+          <button type="button" data-folder="all" class="nav-item"><svg class="icon"><use href="#i-all"></use></svg><span>全部邮件</span><small>ALL</small></button>
+          <details class="status-folders">
+            <summary><span>发件状态</span><small>2</small></summary>
+            <div class="status-folder-list">
+              <button type="button" data-folder="outbox" class="nav-item"><svg class="icon"><use href="#i-outbox"></use></svg><span>发件箱</span><small>OUTBOX</small></button>
+              <button type="button" data-folder="failed" class="nav-item"><svg class="icon"><use href="#i-alert"></use></svg><span>发件失败</span><small>FAILED</small></button>
+            </div>
+          </details>
         </nav>
+        <div class="sidebar-micro" aria-hidden="true">ROSSI MAIL / REV 2026.11</div>
         <button type="button" class="nav-item routing-nav" data-action="routing">
-          <svg class="icon"><use href="#i-route"></use></svg>Email Routing
+          <svg class="icon"><use href="#i-settings"></use></svg><span>邮箱设置</span><small>SETTINGS</small>
         </button>
       </aside>
 
       <section id="list-panel" class="list-panel glass" aria-label="邮件列表">
         <div class="panel-heading">
-          <h2 id="folder-title">收件箱</h2>
+          <div class="panel-title"><span id="folder-eyebrow" class="eyebrow">// INBOX</span><h2 id="folder-title">收件箱</h2></div>
           <span id="message-count" class="count"></span>
         </div>
-        <nav id="mobile-folder-nav" class="mobile-folder-nav" aria-label="文件夹">
-          <button type="button" data-folder="inbox" class="active">收件箱</button>
-          <button type="button" data-folder="sent">已发送</button>
-          <button type="button" data-folder="failed">失败</button>
-          <button type="button" data-folder="outbox">发件箱</button>
-          <button type="button" data-folder="trash">垃圾箱</button>
-          <button type="button" data-folder="all">全部</button>
-        </nav>
+        <label class="mobile-folder-nav" for="mobile-folder-select">
+          <span>文件夹</span>
+          <select id="mobile-folder-select">
+            <option value="inbox">收件箱</option>
+            <option value="sent">已发送</option>
+            <option value="outbox">发件箱</option>
+            <option value="failed">发件失败</option>
+            <option value="trash">垃圾箱</option>
+            <option value="all">全部邮件</option>
+          </select>
+        </label>
         <div id="message-list" class="message-list" aria-live="polite"></div>
       </section>
 
       <section id="detail-panel" class="detail-panel glass" aria-label="邮件详情">
         <div id="message-detail" class="message-detail">
-          <div class="empty-state">选择邮件</div>
+          <div class="empty-state"><span class="empty-copy">选择一封邮件查看内容</span></div>
         </div>
       </section>
 
-      <section id="routing-panel" class="routing-panel glass" aria-label="Email Routing" hidden>
+      <section id="routing-panel" class="routing-panel glass" aria-label="邮箱设置" hidden>
         <div id="routing-content"></div>
       </section>
+
+      <aside class="mail-artwork" aria-hidden="true">
+        <img src="https://cdn.rrrosmontis.icu/rossi/rossi-c6ba909ef9dc.webp" alt="" loading="lazy" decoding="async">
+        <span>ROSSI MAIL</span>
+      </aside>
     </div>
 
     <nav class="bottom-nav glass" aria-label="主导航">
       <button type="button" class="bottom-item active" data-action="mail"><svg class="icon"><use href="#i-mail"></use></svg><span>邮件</span></button>
-      <button type="button" class="bottom-item" data-action="compose"><svg class="icon"><use href="#i-compose"></use></svg><span>写</span></button>
-      <button type="button" class="bottom-item" data-action="routing"><svg class="icon"><use href="#i-route"></use></svg><span>路由</span></button>
+      <button type="button" class="bottom-item" data-action="compose"><svg class="icon"><use href="#i-compose"></use></svg><span>写邮件</span></button>
+      <button type="button" class="bottom-item" data-action="routing"><svg class="icon"><use href="#i-settings"></use></svg><span>设置</span></button>
     </nav>
   </div>
 

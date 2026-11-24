@@ -4,7 +4,6 @@
   const DEFAULT_API_BASE = 'https://api.mail.akaros.si';
   const KEY_STORAGE = 'akaros-mail-api-key';
   const BASE_STORAGE = 'akaros-mail-api-base';
-  const THEME_STORAGE = 'akaros-mail-theme';
   const MAX_ATTACHMENTS_SIZE = 10 * 1024 * 1024;
   const FOLDER_LABELS = {
     inbox: '收件箱',
@@ -13,6 +12,14 @@
     outbox: '发件箱',
     trash: '垃圾箱',
     all: '全部邮件'
+  };
+  const FOLDER_LABELS_EN = {
+    inbox: 'INBOX',
+    sent: 'SENT',
+    failed: 'FAILED',
+    outbox: 'OUTBOX',
+    trash: 'TRASH',
+    all: 'ALL MAIL'
   };
 
   const $ = (id) => document.getElementById(id);
@@ -26,10 +33,12 @@
     searchForm: $('search-form'),
     searchInput: $('search-input'),
     refreshButton: $('refresh-button'),
-    themeButton: $('theme-button'),
     logoutButton: $('logout-button'),
+    accountLabel: $('account-label'),
     folderNav: $('folder-nav'),
     folderTitle: $('folder-title'),
+    folderEyebrow: $('folder-eyebrow'),
+    mobileFolderSelect: $('mobile-folder-select'),
     messageCount: $('message-count'),
     messageList: $('message-list'),
     messageDetail: $('message-detail'),
@@ -66,24 +75,6 @@
   function storageRemove(key) {
     try { localStorage.removeItem(key); } catch { /* Storage can be unavailable. */ }
   }
-
-  function applyTheme(theme, persist = true) {
-    const resolved = theme === 'dark' ? 'dark' : 'light';
-    document.documentElement.dataset.theme = resolved;
-    if (persist) storageSet(THEME_STORAGE, resolved);
-    const themeColor = document.querySelector('meta[name="theme-color"]');
-    if (themeColor) themeColor.content = resolved === 'dark' ? '#10161d' : '#f4f7fa';
-    const use = dom.themeButton.querySelector('use');
-    use.setAttribute('href', resolved === 'dark' ? '#i-sun' : '#i-moon');
-    const label = resolved === 'dark' ? '浅色模式' : '暗色模式';
-    dom.themeButton.title = label;
-    dom.themeButton.setAttribute('aria-label', label);
-  }
-
-  const systemTheme = window.matchMedia('(prefers-color-scheme: dark)');
-  systemTheme.addEventListener('change', (event) => {
-    if (!storageGet(THEME_STORAGE)) applyTheme(event.matches ? 'dark' : 'light', false);
-  });
 
   const entryUrl = new URL(window.location.href);
   if (entryUrl.searchParams.has('key')) {
@@ -217,6 +208,7 @@
     dom.app.hidden = true;
     dom.composeModal.hidden = true;
     dom.loginView.hidden = false;
+    updateFunctionLabel();
     dom.loginError.textContent = '请重新登录';
     dom.loginError.hidden = false;
     dom.apiKey.value = '';
@@ -233,8 +225,10 @@
     state.attachments = [];
     state.routing = null;
     state.identity = null;
+    dom.accountLabel.textContent = '';
     state.composeFiles = [];
     state.sending = false;
+    composeMode = null;
     state.view = 'mail';
     state.loadingList = false;
     state.loadingDetail = false;
@@ -313,45 +307,56 @@
       button.classList.toggle('active', button.dataset.action === (routing ? 'routing' : 'mail'));
     });
     document.querySelectorAll('.routing-nav').forEach((button) => button.classList.toggle('active', routing));
+    updateFunctionLabel();
   }
 
   function updateFolderNav() {
     dom.folderTitle.textContent = FOLDER_LABELS[state.folder] || '邮件';
+    dom.folderEyebrow.textContent = `// ${FOLDER_LABELS_EN[state.folder] || 'MAIL'}`;
+    dom.mobileFolderSelect.value = state.folder;
     document.querySelectorAll('[data-folder]').forEach((button) => {
       button.classList.toggle('active', button.dataset.folder === state.folder);
+      if (button.dataset.folder === state.folder) button.setAttribute('aria-current', 'page');
+      else button.removeAttribute('aria-current');
+      if (button.closest('.status-folders') && button.dataset.folder === state.folder) {
+        button.closest('.status-folders').open = true;
+      }
     });
+    updateFunctionLabel();
   }
 
   function renderList() {
-    dom.messageCount.textContent = state.messages.length ? String(state.messages.length) : '';
+    dom.messageCount.textContent = state.messages.length ? `${state.messages.length} 封` : '';
     if (state.loadingList && !state.messages.length) {
-      dom.messageList.innerHTML = '<div class="loading-state">加载中…</div>';
+      dom.messageList.innerHTML = '<div class="loading-state"><span class="loading-bar"></span>正在加载邮件</div>';
       return;
     }
     if (state.listError && !state.messages.length) {
-      dom.messageList.innerHTML = `<div class="error-state"><div>加载失败<br><button class="text-button" type="button" data-action="retry-list">重试</button></div></div>`;
+      dom.messageList.innerHTML = `<div class="error-state"><div>邮件加载失败<br><button class="text-button" type="button" data-action="retry-list">重试</button></div></div>`;
       return;
     }
     if (!state.messages.length) {
-      dom.messageList.innerHTML = '<div class="empty-state">无邮件</div>';
+      dom.messageList.innerHTML = '<div class="empty-state"><div><strong>没有邮件</strong><span>此文件夹中的邮件会显示在这里</span></div></div>';
       return;
     }
 
-    dom.messageList.innerHTML = state.messages.map((message) => {
+    dom.messageList.innerHTML = state.messages.map((message, index) => {
       const id = String(message.id);
       const unread = message.direction !== 'out' && !message.is_read;
       const failed = message.folder === 'failed' || message.status === 'failed';
       const pending = !failed && (message.folder === 'outbox' || message.status === 'queued' || message.status === 'pending');
       const count = Number(message.attachment_count) || 0;
       return `<button type="button" class="message-item${unread ? ' unread' : ''}${state.selectedId === id ? ' selected' : ''}" data-message-id="${esc(id)}">
-        <span class="sender">${esc(senderLabel(message))}</span>
-        <time class="message-date">${esc(formatDate(message.created_at))}</time>
-        <span class="subject">${esc(message.subject || '(无主题)')}</span>
-        <span class="snippet">${esc(message.snippet || '')}</span>
-        <span class="message-meta">
-          ${failed ? '<span class="badge failed">失败</span>' : ''}
-          ${pending ? '<span class="badge pending">待发</span>' : ''}
-          ${count > 0 ? `${icon('paperclip')}<span>${esc(count)}</span>` : ''}
+        <span class="message-index">${String(index + 1).padStart(2, '0')}</span>
+        <span class="message-main">
+          <span class="message-line"><span class="sender">${esc(senderLabel(message))}</span><time class="message-date">${esc(formatDate(message.created_at))}</time></span>
+          <span class="subject">${esc(message.subject || '(无主题)')}</span>
+          <span class="snippet">${esc(message.snippet || '')}</span>
+          <span class="message-meta">
+            ${failed ? '<span class="badge failed">失败</span>' : ''}
+            ${pending ? '<span class="badge pending">待发</span>' : ''}
+            ${count > 0 ? `${icon('paperclip')}<span>${esc(count)}</span>` : ''}
+          </span>
         </span>
       </button>`;
     }).join('');
@@ -360,7 +365,10 @@
   async function loadIdentity() {
     const identity = await request('/api/me');
     state.identity = identity;
-    dom.app.querySelector('.brand').title = identity.account || '管理员';
+    const account = identity.account || '全部邮箱';
+    dom.accountLabel.textContent = account;
+    dom.accountLabel.title = account;
+    dom.app.querySelector('.brand').title = account;
   }
 
   async function initializeMailbox() {
@@ -414,7 +422,8 @@
     state.detailError = '';
     state.detailMode = 'html';
     dom.app.classList.remove('detail-open');
-    dom.messageDetail.innerHTML = '<div class="empty-state">选择邮件</div>';
+    dom.messageDetail.innerHTML = '<div class="empty-state"><span class="empty-copy">选择一封邮件查看内容</span></div>';
+    updateFunctionLabel();
     renderList();
   }
 
@@ -440,7 +449,7 @@
       .replace(/(\b(?:src|poster|background)\s*=\s*)http:\/\//gi, '$1https://')
       .replace(/(\bsrcset\s*=\s*["'])([^"']*)/gi, (_, prefix, value) => `${prefix}${value.replace(/http:\/\//gi, 'https://')}`)
       .replace(/(url\(\s*['"]?)http:\/\//gi, '$1https://');
-    return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'none'; connect-src 'none'; img-src data: https:; media-src 'none'; object-src 'none'; frame-src 'none'; child-src 'none'; font-src 'none'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'"><meta name="referrer" content="no-referrer"><style>html,body{margin:0;padding:0;background:#fff;color:#2c3e50;font:14px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;overflow-wrap:anywhere}body{padding:16px}img,svg,video{max-width:100%;height:auto}table{max-width:100%}a{color:#2586c5}</style></head><body>${safeContent}</body></html>`;
+    return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'none'; connect-src 'none'; img-src data: https:; media-src 'none'; object-src 'none'; frame-src 'none'; child-src 'none'; font-src 'none'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'"><meta name="referrer" content="no-referrer"><style>html,body{margin:0;padding:0;background:#fff;color:#161616;font:14px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;overflow-wrap:anywhere}body{padding:16px}img,svg,video{max-width:100%;height:auto}table{max-width:100%}a{color:#161616;text-decoration-color:#fffa00}</style></head><body>${safeContent}</body></html>`;
   }
 
   function renderDetail() {
@@ -454,7 +463,7 @@
     }
     const message = state.message;
     if (!message) {
-      dom.messageDetail.innerHTML = '<div class="empty-state">选择邮件</div>';
+      dom.messageDetail.innerHTML = '<div class="empty-state"><span class="empty-copy">选择一封邮件查看内容</span></div>';
       return;
     }
 
@@ -469,7 +478,10 @@
     dom.messageDetail.innerHTML = `<header class="detail-header">
       <div class="detail-title-row">
         <button class="icon-button mobile-back" type="button" data-action="back" title="返回" aria-label="返回">${icon('back')}</button>
-        <h2>${esc(message.subject || '(无主题)')}</h2>
+        <div class="detail-title-stack">
+          <span class="detail-crumb" aria-hidden="true">// ${esc(FOLDER_LABELS_EN[state.folder] || 'MAIL')} / MESSAGE</span>
+          <h2>${esc(message.subject || '(无主题)')}</h2>
+        </div>
       </div>
       <div class="detail-actions">
         <button class="button subtle" type="button" data-action="reply">${icon('reply')}回复</button>
@@ -510,6 +522,7 @@
     state.detailError = '';
     state.loadingDetail = true;
     dom.app.classList.add('detail-open');
+    updateFunctionLabel();
     renderList();
     renderDetail();
     try {
@@ -617,6 +630,8 @@
   function openCompose(mode = 'new') {
     if (state.sending) return;
     lastFocused = document.activeElement;
+    composeMode = mode;
+    updateFunctionLabel();
     dom.composeForm.reset();
     const accountOnly = state.identity?.role === 'account';
     dom.composeFrom.value = accountOnly ? state.identity.account : 'no-reply@akaros.si';
@@ -654,6 +669,8 @@
   function closeCompose(force = false) {
     if (state.sending && !force) return;
     dom.composeModal.hidden = true;
+    composeMode = null;
+    updateFunctionLabel();
     state.composeFiles = [];
     dom.composeFiles.value = '';
     renderComposeFiles();
@@ -773,16 +790,16 @@
     const accountOnly = routing.access?.role === 'account' || state.identity?.role === 'account';
     const accountAddress = routing.access?.account || state.identity?.account || '';
 
-    dom.routingContent.innerHTML = `<div class="routing-header"><h2>Email Routing</h2><span class="badge ${settings.enabled ? 'ok' : 'off'}">${settings.enabled ? '已启用' : '未启用'}</span></div>
+    dom.routingContent.innerHTML = `<div class="routing-header"><div><span class="eyebrow">// SETTINGS</span><h2>邮箱设置</h2></div><span class="badge ${settings.enabled ? 'ok' : 'off'}">${settings.enabled ? '转发已启用' : '转发未启用'}</span></div>
       <div class="route-grid">
         ${canManageCatchAll ? `<section class="route-card wide">
-          <h3>Catch-All</h3>
+          <h3>默认转发规则</h3>
           <form class="route-form catch-all-form" data-form="catch-all">
             <label class="route-check"><input name="enabled" type="checkbox" ${catchAll.enabled ? 'checked' : ''}>启用</label>
-            <label class="route-field">动作<select name="action" data-action-select>
-              <option value="worker" ${action === 'worker' ? 'selected' : ''}>Worker</option>
-              <option value="drop" ${action === 'drop' ? 'selected' : ''}>Drop</option>
-              <option value="forward" ${action === 'forward' ? 'selected' : ''}>Forward</option>
+            <label class="route-field">处理方式<select name="action" data-action-select>
+              <option value="worker" ${action === 'worker' ? 'selected' : ''}>按转发规则处理</option>
+              <option value="drop" ${action === 'drop' ? 'selected' : ''}>丢弃</option>
+              <option value="forward" ${action === 'forward' ? 'selected' : ''}>转发到指定地址</option>
             </select></label>
             <label class="route-field" data-destination-field ${action !== 'forward' ? 'hidden' : ''}>目标地址<input name="destination" type="email" value="${esc(catchDestination)}" ${action === 'forward' ? 'required' : ''}></label>
             <button class="button primary" type="submit">保存</button>
@@ -794,7 +811,7 @@
           <div class="rule-list">${rules.length ? rules.map((rule) => {
             const ruleAction = routingAction(rule);
             const type = ruleAction.type || '';
-            const target = type === 'forward' ? actionDestination(ruleAction) : type === 'worker' ? 'Worker' : type === 'drop' ? '丢弃' : type;
+            const target = type === 'forward' ? actionDestination(ruleAction) : type === 'worker' ? '按规则处理' : type === 'drop' ? '丢弃' : type;
             const address = routingRuleAddress(rule);
             return `<div class="rule-item">
               <div class="rule-address" title="${esc(address)}">${esc(address || '(无地址)')}${rule.name ? `<span class="rule-name">${esc(rule.name)}</span>` : ''}</div>
@@ -977,6 +994,7 @@
     closeCompose(true);
     dom.app.hidden = true;
     dom.loginView.hidden = false;
+    updateFunctionLabel();
     dom.loginError.hidden = true;
     dom.apiKey.value = '';
     dom.apiKey.focus();
@@ -998,9 +1016,7 @@
   });
 
   dom.refreshButton.addEventListener('click', refreshCurrent);
-  dom.themeButton.addEventListener('click', () => {
-    applyTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark');
-  });
+  dom.mobileFolderSelect.addEventListener('change', (event) => changeFolder(event.target.value));
   dom.composeFiles.addEventListener('change', addFiles);
   dom.composeForm.addEventListener('submit', (event) => {
     event.preventDefault();
@@ -1054,6 +1070,7 @@
       case 'mail':
         setView('mail');
         dom.app.classList.remove('detail-open');
+        updateFunctionLabel();
         break;
       case 'routing':
         clearDetail();
@@ -1061,7 +1078,10 @@
         loadRouting();
         break;
       case 'compose': openCompose(); break;
-      case 'back': dom.app.classList.remove('detail-open'); break;
+      case 'back':
+        dom.app.classList.remove('detail-open');
+        updateFunctionLabel();
+        break;
       case 'reply': openCompose('reply'); break;
       case 'forward': openCompose('forward'); break;
       case 'toggle-read': toggleRead(); break;
@@ -1099,7 +1119,33 @@
     }
   });
 
-  applyTheme(document.documentElement.dataset.theme, false);
+  const rotatorItems = Array.from(document.querySelectorAll('.function-rotator-text'));
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let composeMode = null;
+  let lastFunctionLabel = '';
+
+  function currentFunctionLabel() {
+    if (composeMode) return { reply: 'REPLY', forward: 'FORWARD' }[composeMode] || 'COMPOSE';
+    if (!dom.loginView.hidden) return 'SIGN IN';
+    if (state.view === 'routing') return 'SETTINGS';
+    if (dom.app.classList.contains('detail-open')) return 'MESSAGE';
+    return FOLDER_LABELS_EN[state.folder] || 'MAIL';
+  }
+
+  function updateFunctionLabel() {
+    const label = currentFunctionLabel();
+    if (label === lastFunctionLabel) return;
+    lastFunctionLabel = label;
+    rotatorItems.forEach((item) => {
+      item.textContent = label;
+      item.classList.remove('swap');
+      if (!reducedMotion.matches) {
+        void item.offsetWidth;
+        item.classList.add('swap');
+      }
+    });
+  }
+
   dom.apiBase.value = state.apiBase;
   updateFolderNav();
   state.loadingList = Boolean(state.key);
@@ -1114,4 +1160,5 @@
     dom.loginView.hidden = false;
     dom.app.hidden = true;
   }
+  updateFunctionLabel();
 })();
