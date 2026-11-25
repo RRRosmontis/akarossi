@@ -1,0 +1,26 @@
+{
+  "name": "Rossi Mail",
+  "short_name": "Rossi Mail",
+  "description": "Rossi Mail 邮件客户端",
+  "id": "/mail/",
+  "start_url": "/mail/",
+  "scope": "/mail/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f4f4f2",
+  "theme_color": "#161616",
+  "icons": [
+    {
+      "src": "https://cdn.rrrosmontis.icu/rossi/rossi-icon-192-dd5d476fb28a.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "https://cdn.rrrosmontis.icu/rossi/rossi-icon-512-bfc447135094.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
