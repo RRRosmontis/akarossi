@@ -1683,3 +1683,83 @@
         #About .social-links a:hover {
             color: rgba(80, 80, 80, 0.95);
         }
+
+/* Profile card (restored #dynamic-content box) */
+.profile-card {
+    display: grid;
+    width: 100%;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 24px;
+}
+
+.profile-avatar {
+    justify-self: center;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.22);
+}
+
+.profile-lines {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-width: 0;
+}
+
+.profile-name {
+    font-size: 1.6em;
+    font-weight: 700;
+    color: #2c3e50;
+    letter-spacing: 0.02em;
+}
+
+.profile-name-sub {
+    font-size: 1.1em;
+    color: #555;
+}
+
+.profile-affiliation {
+    font-size: 0.85em;
+    color: #999;
+    font-weight: 400;
+}
+
+@media (max-width: 600px) {
+    .profile-card {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .profile-avatar {
+        width: 92px;
+        height: 92px;
+    }
+
+    .profile-name {
+        font-size: 1.3em;
+    }
+
+    .profile-name-sub {
+        font-size: 1em;
+    }
+
+    .profile-affiliation {
+        font-size: 0.78em;
+        line-height: 1.4;
+    }
+}
+
+
+/* Profile card: let the restored box grow to fit its content on small screens */
+@media (max-width: 600px) {
+    #dynamic-content.has-profile {
+        height: auto;
+        max-height: none;
+        min-height: 0;
+    }
+}
