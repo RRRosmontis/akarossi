@@ -295,6 +295,8 @@
         .footer-sep {
             margin: 0 5px;
             color: #c9c9c9;
+            opacity: 0;
+            transition: opacity 0.5s ease;
         }
 
         .footer-quote {

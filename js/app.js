@@ -51,7 +51,9 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             const quoteEls = Array.from(document.querySelectorAll('.footer-quote'));
+            const footerSep = document.querySelector('.footer-sep');
             if (!quoteEls.length) return;
+            if (footerSep) footerSep.style.opacity = 0;
 
             let isTyping = false;
             let lines = [];
@@ -98,6 +100,7 @@
                         el.style.opacity = 1;
                         el.getBoundingClientRect();
                     });
+                    if (footerSep) footerSep.style.opacity = 1;
                     isTyping = true;
 
                     let charIndex = 0;
@@ -110,6 +113,7 @@
                         } else {
                             render(currentLine);
                             setTimeout(() => {
+                                if (footerSep) footerSep.style.opacity = 0;
                                 deleteCharacter(currentLine, currentLine.length);
                             }, 3000);
                         }
