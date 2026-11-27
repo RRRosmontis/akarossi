@@ -1721,7 +1721,7 @@
 /* Profile card (restored #dynamic-content box) */
 .profile-card {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 2fr;
     align-items: center;
     gap: 24px;
     width: 100%;
@@ -1732,7 +1732,7 @@
     justify-self: center;
     width: 120px;
     height: 120px;
-    border-radius: 50%;
+    border-radius: 20px;
     object-fit: cover;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.22);
 }
