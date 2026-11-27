@@ -50,90 +50,86 @@
         });
 
         document.addEventListener('DOMContentLoaded', function() {
-    const contentText = document.getElementById('content-text');
-    const lineNumber = document.getElementById('line-number');
-    if (!contentText || !lineNumber) return;
+            const quoteEls = Array.from(document.querySelectorAll('.footer-quote'));
+            if (!quoteEls.length) return;
 
-            
-        let isTyping = false;
-        let lines = [];
-        let lastIndex = -1;
+            let isTyping = false;
+            let lines = [];
+            let lastIndex = -1;
 
-        fetch('https://cdn.rrrosmontis.icu/dict.txt')
-            .then(response => response.text())
-            .then(data => {
-                lines = data.split('\n').filter(line => line.trim() !== '');
-                startPresentation();
-            })
-            .catch(error => console.error('文件加载失败:', error));
+            fetch('https://cdn.rrrosmontis.icu/dict.txt')
+                .then(response => response.text())
+                .then(data => {
+                    lines = data.split('\n').filter(line => line.trim() !== '');
+                    startPresentation();
+                })
+                .catch(error => console.error('文件加载失败:', error));
 
-        function getRandomLine() {
-            let newIndex;
-            do {
-                newIndex = Math.floor(Math.random() * lines.length);
-            } while (newIndex === lastIndex && lines.length > 1);
-            lastIndex = newIndex;
-            return newIndex;
-        }
-
-        function startPresentation() {
-            if (isTyping) return;
-
-            lineNumber.style.opacity = 0;
-            lineNumber.getBoundingClientRect();
-
-            contentText.style.opacity = 0;
-            contentText.getBoundingClientRect();
-
-            setTimeout(() => {
-                const randomIndex = getRandomLine();
-                const currentLine = lines[randomIndex];
-                
-                lineNumber.textContent = `Line ${randomIndex + 1}`;
-                lineNumber.getBoundingClientRect();
-                lineNumber.style.opacity = 1;
-
-                contentText.innerHTML = '';
-                contentText.getBoundingClientRect();
-                isTyping = true;
-                
-                let charIndex = 0;
-                function typeCharacter() {
-                    if (charIndex < currentLine.length) {
-                        contentText.innerHTML = currentLine.substring(0, charIndex) + 
-                                            `<span class="typing-cursor">|</span>`;
-                        contentText.getBoundingClientRect();
-                        contentText.style.opacity = 1;
-                        charIndex++;
-                        setTimeout(typeCharacter, 50);
-                    } else {
-                        contentText.innerHTML = currentLine;
-                        contentText.getBoundingClientRect();
-                        setTimeout(() => {
-                            lineNumber.style.opacity = 0;
-                            lineNumber.getBoundingClientRect();
-                            deleteCharacter(currentLine, currentLine.length);
-                        }, 3000);
-                    }
-                }
-                typeCharacter();
-            }, 500);
-        }
-
-        function deleteCharacter(line, remaining) {
-            if (remaining > 0) {
-                const newText = line.substring(0, remaining - 1);
-                contentText.innerHTML = newText + `<span class="typing-cursor">|</span>`;
-                contentText.getBoundingClientRect();
-                setTimeout(() => deleteCharacter(line, remaining - 1), 20);
-            } else {
-                contentText.innerHTML = '';
-                contentText.getBoundingClientRect();
-                isTyping = false;
-                requestAnimationFrame(startPresentation);
+            function render(html) {
+                quoteEls.forEach(el => {
+                    el.innerHTML = html;
+                    el.getBoundingClientRect();
+                });
             }
-        }
+
+            function getRandomLine() {
+                let newIndex;
+                do {
+                    newIndex = Math.floor(Math.random() * lines.length);
+                } while (newIndex === lastIndex && lines.length > 1);
+                lastIndex = newIndex;
+                return newIndex;
+            }
+
+            function startPresentation() {
+                if (isTyping || !lines.length) return;
+
+                quoteEls.forEach(el => {
+                    el.style.opacity = 0;
+                    el.getBoundingClientRect();
+                });
+
+                setTimeout(() => {
+                    const randomIndex = getRandomLine();
+                    const currentLine = lines[randomIndex];
+
+                    render('');
+                    quoteEls.forEach(el => {
+                        el.style.opacity = 1;
+                        el.getBoundingClientRect();
+                    });
+                    isTyping = true;
+
+                    let charIndex = 0;
+                    function typeCharacter() {
+                        if (charIndex < currentLine.length) {
+                            render(currentLine.substring(0, charIndex) +
+                                '<span class="typing-cursor">|</span>');
+                            charIndex++;
+                            setTimeout(typeCharacter, 50);
+                        } else {
+                            render(currentLine);
+                            setTimeout(() => {
+                                deleteCharacter(currentLine, currentLine.length);
+                            }, 3000);
+                        }
+                    }
+                    typeCharacter();
+                }, 500);
+            }
+
+            function deleteCharacter(line, remaining) {
+                if (remaining > 0) {
+                    render(line.substring(0, remaining - 1) + '<span class="typing-cursor">|</span>');
+                    setTimeout(() => deleteCharacter(line, remaining - 1), 20);
+                } else {
+                    render('');
+                    isTyping = false;
+                    requestAnimationFrame(startPresentation);
+                }
+            }
 });
+
     
 
         function initRainEffect() {

@@ -280,6 +280,17 @@
             font-family: -apple-system, BlinkMacSystemFont, sans-serif; 
           }
 
+        .footer-quote-mobile {
+            display: block;
+            max-width: calc(100vw - 32px);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            font-size: 0.72em;
+            color: #888;
+            min-height: 1.1em;
+        }
+
 
         .title-container {
             margin: 0 auto; 

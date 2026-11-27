@@ -285,6 +285,23 @@
             font-family: -apple-system, BlinkMacSystemFont, sans-serif; 
           }
 
+        .footer .desktop-footer {
+            padding: 0 24px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .footer-sep {
+            margin: 0 5px;
+            color: #c9c9c9;
+        }
+
+        .footer-quote {
+            color: #666;
+            letter-spacing: 0.02em;
+        }
+
 
         .title-container {
             margin: 0 auto; 
